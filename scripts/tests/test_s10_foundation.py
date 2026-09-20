@@ -84,8 +84,10 @@ source "$1"
         self.assertNotEqual(p.returncode,0)
         self.assertIn('S10 preflight:',p.stderr+p.stdout)
 
-    def test_installation_remains_disabled(self):
+    def test_controlled_installation_is_explicit(self):
         p=ROOT/'target/beyond1lte/installer/assertions.edify'
-        self.assertEqual(p.read_text().strip(),'abort("UN1CA S10 port is incomplete; installation is disabled.");')
+        lines = [line.strip() for line in p.read_text().splitlines() if line.strip()]
+        self.assertTrue(lines)
+        self.assertTrue(all(line.startswith('#') for line in lines))
 
 if __name__=='__main__':unittest.main()

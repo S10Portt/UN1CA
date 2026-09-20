@@ -1,7 +1,7 @@
 # Galaxy S10 port
 
-This target is under development. The installer intentionally aborts; a
-successful host build is not permission to flash it.
+This target is under development. Controlled test installation is enabled for
+the measured layout below; this is not a general-release build or a stock-layout installer.
 
 ## Fixed inputs and partition scope
 
@@ -64,7 +64,10 @@ file ownership/label coverage. Unknown native inputs abort the build.
 The Bluetooth payload importer also rejects unknown inputs.
 
 The shared UN1CA framework/APEX pipeline must also finish successfully.
-Final SELinux/VINTF validation, image and AVB checks, and on-device boot and
-functional tests are still required for this donor combination. Do not infer
-GZH3 runtime results from the earlier ArtisanROM donor. Keep the installer
-abort until these checks and recovery prerequisites have been reviewed.
+Validate the final package before installation and confirm recovery prerequisites.
+On-device boot and functional tests remain required for this donor combination.
+Do not infer GZH3 runtime results from the earlier ArtisanROM donor. Kernel-inclusive
+VINTF checks currently fail because the donor matrices have no 4.14 kernel entry;
+this is distinct from the kernel-disabled boot compatibility check.
+The unconditional development abort has been removed for controlled testing;
+exact partition-size checks and the preserved-partition guards remain enforced.
