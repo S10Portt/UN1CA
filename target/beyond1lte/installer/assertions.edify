@@ -1,1 +1,2 @@
-abort("UN1CA S10 port is incomplete; installation is disabled.");
+# Controlled beyond1lte test installation is enabled.
+# The measured partition layout preflight and preserved-partition guards remain mandatory.

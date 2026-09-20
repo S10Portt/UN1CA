@@ -57,10 +57,17 @@ class InstallerStageTests(unittest.TestCase):
                 (stage/(part+'.transfer.list')).write_text('4\n1\n0\n0\nnew 2,0,1\n')
             for part in ('dtb','dtbo','boot'):
                 lines.append(f'package_extract_file("{part}.img", "/dev/block/by-name/{part}");')
-            script.write_text('\n'.join(lines)+'\n');prepare(ROOT,stage)
+            repo=stage/'fixture-repo'
+            for name in ('target/beyond1lte/installer/layout-preflight.sh',
+                         'target/beyond1lte/layouts/measurement/layout.json',
+                         'prebuilts/bootable/deprecated-ota/updater'):
+                p=repo/name;p.parent.mkdir(parents=True,exist_ok=True)
+                p.write_bytes((ROOT/name).read_bytes())
+            (repo/'target/beyond1lte/installer/assertions.edify').write_text(guard.ABORT+'\n')
+            script.write_text('\n'.join(lines)+'\n');prepare(repo,stage)
             self.assertEqual(script.read_text().splitlines()[0],guard.ABORT)
-            guard.check(ROOT,stage)
-            with self.assertRaises(ValueError):prepare(ROOT,stage)
+            guard.check(repo,stage)
+            with self.assertRaises(ValueError):prepare(repo,stage)
 
     def test_actual_ota_generator_matches_installer_guard(self):
         import os
