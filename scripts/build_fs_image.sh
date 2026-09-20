@@ -81,6 +81,9 @@ BUILD_IMAGE_MKFS()
             # https://android.googlesource.com/platform/build/+/refs/tags/android-15.0.0_r1/core/Makefile#2084
             BUILD_CMD+="-z \"lz4hc,9\" "
             BUILD_CMD+="-b \"4096\" "
+            if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+                BUILD_CMD+="-C 4096 "
+            fi
             BUILD_CMD+="--mount-point \"$MOUNT_POINT\" "
             BUILD_CMD+="--fs-config-file \"$FS_CONFIG_FILE\" "
             BUILD_CMD+="--file-contexts \"$FILE_CONTEXT_FILE\" "
@@ -124,6 +127,9 @@ BUILD_IMAGE_MKFS()
     esac
 
     EVAL "$BUILD_CMD" || exit 1
+    if [[ "$TARGET_CODENAME" == "beyond1lte" && "$FS_TYPE" == "erofs" ]]; then
+        python3 -B "$SRC_DIR/scripts/utils/s10_erofs.py" "$OUTPUT_FILE" || exit 1
+    fi
 
     if $MANUAL_SPARSE; then
         EVAL "img2simg \"$OUTPUT_FILE\" \"$OUTPUT_FILE.sparse\"" || exit 1
@@ -482,6 +488,10 @@ fi
 if $AVB_SIGN; then
     LOG "- Signing image with AVB"
     EVAL "$(GET_AVBTOOL_CMD)" || exit 1
+fi
+
+if [[ "$TARGET_CODENAME" == "beyond1lte" && "$FS_TYPE" == "erofs" ]]; then
+    python3 -B "$SRC_DIR/scripts/utils/s10_erofs.py" "$OUTPUT_FILE" || exit 1
 fi
 
 LOG_STEP_OUT
