@@ -22,9 +22,12 @@ TARGET_FIRMWARE_PATH="$(cut -d "/" -f 1 -s <<< "$TARGET_FIRMWARE")_$(cut -d "/" 
 
 BUILD_APKS()
 {
-    local MAX_JOBS
+    local MAX_JOBS APK_JOBS
     MAX_JOBS="$(nproc)"
     [ "$MAX_JOBS" -gt "8" ] && MAX_JOBS="8"
+    APK_JOBS="$MAX_JOBS"
+    # APK completion removes profiles from shared partition metadata tables.
+    [[ "$TARGET_CODENAME" == "beyond1lte" ]] && MAX_JOBS=1
 
     if [ -d "$APKTOOL_DIR" ]; then
         LOG_STEP_IN true "Building APKs/JARs"
@@ -36,7 +39,7 @@ BUILD_APKS()
                 PARTITION="$(cut -d "/" -f 1 -s <<< "$FILE")"
                 [[ "$PARTITION" != "system" ]] && FILE="$(cut -d "/" -f 2- -s <<< "$FILE")"
                 "$SRC_DIR/scripts/apktool.sh" b -j "$2" "$PARTITION" "$FILE"
-            ' "bash" "{}" "$MAX_JOBS" || exit 1
+            ' "bash" "{}" "$APK_JOBS" || exit 1
 
         LOG_STEP_OUT
     fi
