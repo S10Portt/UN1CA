@@ -1,0 +1,20 @@
+Subject: [PATCH] Avoid resolving absent policy resource IDs during indexing
+
+--- a/smali/com/android/settings/intelligence/search/indexing/DevicePolicyResourcesUtils.smali
++++ b/smali/com/android/settings/intelligence/search/indexing/DevicePolicyResourcesUtils.smali
+@@ -1666,6 +1666,15 @@
+ 
+     move-result p1
+ 
++    # An absent or literal XML value has no resource entry name.
++    # Keep XmlParserUtils.getData() on its existing TypedArray.getString path.
++    if-ne p1, v0, :s10_policy_resource_present
++
++    const/4 p0, 0x0
++
++    return p0
++
++    :s10_policy_resource_present
+     invoke-virtual {p0, p1}, Landroid/content/res/Resources;->getResourceEntryName(I)Ljava/lang/String;
+ 
+     move-result-object p0

@@ -1,0 +1,4 @@
+id=search_indexing
+name=Galaxy S10 search indexing
+author=UN1CA contributors
+description=Avoids resolving absent policy resource IDs while preserving XML search values.
