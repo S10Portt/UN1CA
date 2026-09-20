@@ -1,0 +1,4 @@
+id=product_abilist
+name=Product partition CPU ABI list
+author=Robertgarciaa
+description=product/etc/build.prop ships neither abilist32 nor abilist64; real init's ro.product.cpu.abilist32 resolves empty at runtime, aborting app_process32/zygote_secondary. Declares them explicitly on product (highest-priority partition in init's resolution order) using the values odm/vendor/system already agree on.

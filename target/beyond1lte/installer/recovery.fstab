@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+/dev/block/by-name/system /system erofs defaults recoveryonly
+/dev/block/by-name/vendor /vendor erofs defaults recoveryonly
+/dev/block/by-name/product /product erofs defaults recoveryonly
+/dev/block/by-name/boot /boot emmc defaults recoveryonly
+/dev/block/by-name/dtb /dtb emmc defaults recoveryonly
+/dev/block/by-name/dtbo /dtbo emmc defaults recoveryonly

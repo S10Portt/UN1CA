@@ -1,0 +1,4 @@
+id=usb_initialization
+name=Galaxy S10 USB initialization
+author=ArtisanROM
+description=Reapplies the initial legacy charging configuration after the MTP control descriptor is ready.

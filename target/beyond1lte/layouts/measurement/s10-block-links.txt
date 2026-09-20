@@ -1,0 +1,1 @@
+lrwxrwxrwx 1 root root 40 2026-09-13 03:25 /dev/block/by-name -> /dev/block/platform/13d60000.ufs/by-name

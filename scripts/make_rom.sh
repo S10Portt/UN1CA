@@ -2,6 +2,12 @@
 # Copyright (c) 2025 Salvo Giangreco
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# The target skeleton is not yet a complete hardware port.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    echo "S10 input registration and hardware module integration are incomplete. See target/beyond1lte/README.md" >&2
+    exit 1
+fi
+
 # [
 source "$SRC_DIR/scripts/utils/build_utils.sh" || exit 1
 

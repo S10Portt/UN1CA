@@ -1,0 +1,221 @@
+{
+  "scope": "Measured layout of the user-reported repartitioned Galaxy S10 running ArtisanROM 3.1.1. Not a stock layout or universal G973F/G973N layout; exact hardware revision and installed ROM source commit remain unverified.",
+  "capture_received": "2026-09-13",
+  "files": {
+    "s10-block-links.txt": {
+      "sha256": "fe20c70ac0000b9271dbece2c434c60cceb9e0d1e785da4fede15c59492da724",
+      "bytes": 106
+    },
+    "s10-mounts.txt": {
+      "sha256": "7645bc8fe6c3cea53cc1a1170c7c1018efc4d159de464a8bd7c6c7a89d00016a",
+      "bytes": 2295
+    },
+    "s10-partition-bytes.txt": {
+      "sha256": "81045b10be11d0d70e5f13c1c4242d8c3e4da2f36c0b93f5c1f57bd8a8dacf52",
+      "bytes": 191
+    },
+    "s10-partitions.txt": {
+      "sha256": "2105d01a2b1fcad4db9efd9642ab6b267ef2df12b0e02ca5e443c01bc9a706e4",
+      "bytes": 1734
+    },
+    "s10-block-links-detail.txt": {
+      "sha256": "5fb916fbb6ce408c9049de10446f53c758753abca5472d76be759511efccb35e",
+      "bytes": 2441
+    }
+  },
+  "partition_bytes": {
+    "system": 7340032000,
+    "vendor": 1572864000,
+    "product": 1572864000,
+    "odm": 4194304,
+    "boot": 57671680,
+    "dtb": 8388608,
+    "dtbo": 8388608,
+    "recovery": 67633152,
+    "vbmeta": 65536,
+    "prism": 629145600,
+    "optics": 31457280,
+    "userdata": 115761721344
+  },
+  "by_name_link": "/dev/block/platform/13d60000.ufs/by-name",
+  "observed_data": {
+    "device": "/dev/block/sda34",
+    "filesystem": "f2fs",
+    "mountpoints": [
+      "/data",
+      "/sdcard"
+    ],
+    "encryption": "not established by mount output"
+  },
+  "proc_partitions_blocks": {
+    "ram0": 8192,
+    "ram1": 8192,
+    "ram2": 8192,
+    "ram3": 8192,
+    "ram4": 8192,
+    "ram5": 8192,
+    "ram6": 8192,
+    "ram7": 8192,
+    "ram8": 8192,
+    "ram9": 8192,
+    "ram10": 8192,
+    "ram11": 8192,
+    "ram12": 8192,
+    "ram13": 8192,
+    "ram14": 8192,
+    "ram15": 8192,
+    "sda": 124944384,
+    "sda1": 4608,
+    "sda2": 7680,
+    "sda3": 20480,
+    "sda4": 8192,
+    "sda5": 8192,
+    "sda6": 512,
+    "sda7": 20480,
+    "sda8": 8192,
+    "sda9": 4096,
+    "sda10": 2048,
+    "sda11": 4096,
+    "sda12": 8192,
+    "sda13": 8192,
+    "sda14": 56320,
+    "sda15": 66048,
+    "sda16": 51200,
+    "sda17": 1024,
+    "sda18": 512,
+    "sda19": 1024,
+    "sda20": 16384,
+    "sda21": 16384,
+    "sda22": 16384,
+    "sda23": 64,
+    "sda24": 1472,
+    "sda25": 7168000,
+    "sda26": 1536000,
+    "sda27": 1536000,
+    "sda28": 4096,
+    "sda29": 614400,
+    "sda30": 30720,
+    "sda31": 614400,
+    "sda32": 51200,
+    "sda33": 5120,
+    "sda34": 113048556,
+    "sdb": 4096,
+    "sdc": 4096,
+    "sdd": 8192,
+    "sdd1": 6144,
+    "sde": 8192
+  },
+  "limitations": [
+    "No super, system_ext or *_dlkm entry in provided by-name listing. Observed OS paths are direct sda partitions, consistent with the static layout; this is not a PIT/history audit.",
+    "System/vendor/product/odm are not mounted in the supplied mounts output; their filesystem types are not measured here.",
+    "Repartitioning and installed ArtisanROM 3.1.1 are user-reported. The repartitioning tool/PIT, hardware revision, original AVB, Android per-file metadata and installed kernel provenance are not supplied.",
+    "No target partition size defaults changed; installation abort retained."
+  ],
+  "by_name_entries": {
+    "boot": "/dev/block/sda14",
+    "bota0": "/dev/block/sda1",
+    "bota1": "/dev/block/sda2",
+    "bota2": "/dev/block/sda8",
+    "bota3": "/dev/block/sda24",
+    "cache": "/dev/block/sda31",
+    "cp_debug": "/dev/block/sda33",
+    "cpefs": "/dev/block/sdd1",
+    "dqmdbg": "/dev/block/sda22",
+    "dtb": "/dev/block/sda12",
+    "dtbo": "/dev/block/sda13",
+    "efs": "/dev/block/sda3",
+    "keydata": "/dev/block/sda21",
+    "keyrefuge": "/dev/block/sda20",
+    "keystorage": "/dev/block/sda6",
+    "misc": "/dev/block/sda19",
+    "nad_refer": "/dev/block/sda17",
+    "odm": "/dev/block/sda28",
+    "omr": "/dev/block/sda32",
+    "optics": "/dev/block/sda30",
+    "param": "/dev/block/sda4",
+    "persistent": "/dev/block/sda18",
+    "prism": "/dev/block/sda29",
+    "product": "/dev/block/sda27",
+    "radio": "/dev/block/sda16",
+    "recovery": "/dev/block/sda15",
+    "sec_efs": "/dev/block/sda7",
+    "steady": "/dev/block/sda9",
+    "system": "/dev/block/sda25",
+    "uh": "/dev/block/sda10",
+    "uhcfg": "/dev/block/sda11",
+    "up_param": "/dev/block/sda5",
+    "userdata": "/dev/block/sda34",
+    "vbmeta": "/dev/block/sda23",
+    "vendor": "/dev/block/sda26"
+  },
+  "verified_size_mapping": {
+    "system": {
+      "device": "/dev/block/sda25",
+      "bytes": 7340032000,
+      "matches_proc_partitions": true
+    },
+    "vendor": {
+      "device": "/dev/block/sda26",
+      "bytes": 1572864000,
+      "matches_proc_partitions": true
+    },
+    "product": {
+      "device": "/dev/block/sda27",
+      "bytes": 1572864000,
+      "matches_proc_partitions": true
+    },
+    "odm": {
+      "device": "/dev/block/sda28",
+      "bytes": 4194304,
+      "matches_proc_partitions": true
+    },
+    "boot": {
+      "device": "/dev/block/sda14",
+      "bytes": 57671680,
+      "matches_proc_partitions": true
+    },
+    "dtb": {
+      "device": "/dev/block/sda12",
+      "bytes": 8388608,
+      "matches_proc_partitions": true
+    },
+    "dtbo": {
+      "device": "/dev/block/sda13",
+      "bytes": 8388608,
+      "matches_proc_partitions": true
+    },
+    "recovery": {
+      "device": "/dev/block/sda15",
+      "bytes": 67633152,
+      "matches_proc_partitions": true
+    },
+    "vbmeta": {
+      "device": "/dev/block/sda23",
+      "bytes": 65536,
+      "matches_proc_partitions": true
+    },
+    "prism": {
+      "device": "/dev/block/sda29",
+      "bytes": 629145600,
+      "matches_proc_partitions": true
+    },
+    "optics": {
+      "device": "/dev/block/sda30",
+      "bytes": 31457280,
+      "matches_proc_partitions": true
+    },
+    "userdata": {
+      "device": "/dev/block/sda34",
+      "bytes": 115761721344,
+      "matches_proc_partitions": true
+    }
+  },
+  "user_reported_context": {
+    "reported_date": "2026-09-13",
+    "device": "Galaxy S10",
+    "repartitioned": true,
+    "installed_rom": "ArtisanROM 3.1.1",
+    "reference_repository_origin": "User believes the installed ROM was built from the reference repository; exact source commit not established.",
+    "evidence_kind": "User statement accompanying the supplied recovery captures; not independently verified from PIT or installed ROM properties."
+  }
+}

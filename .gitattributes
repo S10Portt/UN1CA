@@ -32,3 +32,9 @@ target/o1s/patches/variants/vendor/** binary
 target/p3s/patches/variants/vendor/** binary
 target/r9s/patches/vendor/vendor/** binary
 target/t2s/patches/variants/vendor/** binary
+
+# Fixed kernel images and hashed layout inputs must remain byte-exact.
+target/beyond1lte/kernel/*.img binary
+target/beyond1lte/layouts/measurement/** -text
+# Unified diffs contain required blank context lines prefixed with one space.
+target/beyond1lte/patches/**/*.patch whitespace=-blank-at-eol

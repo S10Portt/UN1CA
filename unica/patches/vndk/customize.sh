@@ -1,11 +1,19 @@
-if [[ "$SOURCE_BOARD_API_LEVEL" == "$TARGET_BOARD_API_LEVEL" ]]; then
+# Legacy vendor VNDK is independent of an absent/unknown board API property.
+TARGET_VNDK_VERSION="${TARGET_LEGACY_VNDK_VERSION:-none}"
+[[ "$TARGET_VNDK_VERSION" == "none" ]] && TARGET_VNDK_VERSION="$TARGET_BOARD_API_LEVEL"
+if [[ ! "$TARGET_VNDK_VERSION" =~ ^[0-9]+$ ]]; then
+    ABORT "No numeric target VNDK version is available"
+fi
+
+if [[ "$SOURCE_BOARD_API_LEVEL" == "$TARGET_VNDK_VERSION" ]]; then
     LOG "\033[0;33m! Nothing to do\033[0m"
+    unset TARGET_VNDK_VERSION
     return 0
 fi
 
 # [
 ADD_TARGET_VNDK_APEX() {
-    case "$TARGET_BOARD_API_LEVEL" in
+    case "$TARGET_VNDK_VERSION" in
         "30")
             ADD_TO_WORK_DIR "a73xqxx" "system_ext" "apex/com.android.vndk.v30.apex" 0 0 644 "u:object_r:system_file:s0"
             ;;
@@ -22,7 +30,7 @@ ADD_TARGET_VNDK_APEX() {
             ADD_TO_WORK_DIR "gta9pxxx" "system_ext" "apex/com.android.vndk.v34.apex" 0 0 644 "u:object_r:system_file:s0"
             ;;
         *)
-            ABORT "No APEX blob available for VNDK $TARGET_BOARD_API_LEVEL"
+            ABORT "No APEX blob available for VNDK $TARGET_VNDK_VERSION"
             ;;
     esac
 }
@@ -34,28 +42,30 @@ else
     SYS_EXT_DIR="$WORK_DIR/system/system/system_ext"
 fi
 
-if [ "$SOURCE_BOARD_API_LEVEL" -gt "34" ] && [ "$TARGET_BOARD_API_LEVEL" -gt "34" ]; then
+if [ "$SOURCE_BOARD_API_LEVEL" -gt "34" ] && [ "$TARGET_VNDK_VERSION" -gt "34" ]; then
     :
-elif [ "$SOURCE_BOARD_API_LEVEL" -gt "34" ] && [ "$TARGET_BOARD_API_LEVEL" -le "34" ]; then
+elif [ "$SOURCE_BOARD_API_LEVEL" -gt "34" ] && [ "$TARGET_VNDK_VERSION" -le "34" ]; then
     ADD_TARGET_VNDK_APEX
     LOG "- Patching ${SYS_EXT_DIR//$WORK_DIR/}/etc/vintf/manifest.xml"
     EVAL "sed -i \"\\\$d\" \"$SYS_EXT_DIR/etc/vintf/manifest.xml\""
     {
         echo "    <vendor-ndk>"
-        echo "        <version>$TARGET_BOARD_API_LEVEL</version>"
+        echo "        <version>$TARGET_VNDK_VERSION</version>"
         echo "    </vendor-ndk>"
         echo "</manifest>"
     } >> "$SYS_EXT_DIR/etc/vintf/manifest.xml"
-elif [ "$SOURCE_BOARD_API_LEVEL" -le "34" ] && [ "$TARGET_BOARD_API_LEVEL" -gt "34" ]; then
+elif [ "$SOURCE_BOARD_API_LEVEL" -le "34" ] && [ "$TARGET_VNDK_VERSION" -gt "34" ]; then
     DELETE_FROM_WORK_DIR "system_ext" "apex/com.android.vndk.v$SOURCE_BOARD_API_LEVEL.apex"
     LOG "- Patching ${SYS_EXT_DIR//$WORK_DIR/}/etc/vintf/manifest.xml"
     EVAL "sed -i -e \"/vendor-ndk/d\" -e \"/version>/d\" \"$SYS_EXT_DIR/etc/vintf/manifest.xml\""
-elif [ ! -f "$SYS_EXT_DIR/apex/com.android.vndk.v$TARGET_BOARD_API_LEVEL.apex" ]; then
+elif [ ! -f "$SYS_EXT_DIR/apex/com.android.vndk.v$TARGET_VNDK_VERSION.apex" ]; then
     DELETE_FROM_WORK_DIR "system_ext" "apex/com.android.vndk.v$SOURCE_BOARD_API_LEVEL.apex"
     ADD_TARGET_VNDK_APEX
     LOG "- Patching ${SYS_EXT_DIR//$WORK_DIR/}/etc/vintf/manifest.xml"
-    EVAL "sed -i \"s/version>$SOURCE_BOARD_API_LEVEL/version>$TARGET_BOARD_API_LEVEL/g\" \"$SYS_EXT_DIR/etc/vintf/manifest.xml\""
+    EVAL "sed -i \"s/version>$SOURCE_BOARD_API_LEVEL/version>$TARGET_VNDK_VERSION/g\" \"$SYS_EXT_DIR/etc/vintf/manifest.xml\""
 fi
 
 unset SYS_EXT_DIR
 unset -f ADD_TARGET_VNDK_APEX
+
+unset TARGET_VNDK_VERSION
