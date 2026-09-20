@@ -468,7 +468,11 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
         else
             ABORT "No known patch available for the supplied libstagefright.so"
         fi
-        if xxd -p -c 0 "$WORK_DIR/system/system/lib64/libstagefright.so" | grep -q "70690594205100347a9a40f9"; then
+        if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+            # Camera module already applies the bounded, whole-input S10 patch.
+            python3 -B "$SRC_DIR/unica/patches/camera/s10_stagefright.py" \
+                "$WORK_DIR/system/system/lib64/libstagefright.so" || return 1
+        elif xxd -p -c 0 "$WORK_DIR/system/system/lib64/libstagefright.so" | grep -q "70690594205100347a9a40f9"; then
             HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
                 "70690594205100347a9a40f9" "706905941f2003d57a9a40f9"
         elif xxd -p -c 0 "$WORK_DIR/system/system/lib64/libstagefright.so" | grep -q "864d0594604d00347a9a40f9"; then
@@ -598,6 +602,10 @@ fi
 if ! grep -q "\"version\": \"4\." "$WORK_DIR/vendor/etc/midas/midas_config.json"; then
     if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
         PATCHED=true
+        if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+            python3 -B "$SRC_DIR/scripts/utils/s10_midas_input.py" \
+                "$SRC_DIR/prebuilts/samsung/a73xqxx" || return 1
+        fi
         DELETE_FROM_WORK_DIR "vendor" "etc/midas"
         ADD_TO_WORK_DIR "a73xqxx" "vendor" \
             "etc/midas" 0 2000 755 "u:object_r:vendor_configs_file:s0"

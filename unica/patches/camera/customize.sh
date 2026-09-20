@@ -376,8 +376,18 @@ if [[ "$TARGET_OS_SINGLE_SYSTEM_IMAGE" == "essi" ]]; then
     fi
 fi
 
+# GZH3 has the same encoder code as GZD7; validate its own whole-file hash.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 -B "$MODPATH/s10_stagefright.py" \
+        "$WORK_DIR/system/system/lib64/libstagefright.so" || return 1
+fi
+
 # Fix portrait mode
-if [ -f "$WORK_DIR/vendor/lib64/libDualCamBokehCapture.camera.samsung.so" ]; then
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 -B "$MODPATH/s10_portrait.py" "$WORK_DIR" \
+        "$FW_DIR/$TARGET_FIRMWARE_PATH" \
+        "$SRC_DIR/target/beyond1lte/camera/portrait-vendor.json" || return 1
+elif [ -f "$WORK_DIR/vendor/lib64/libDualCamBokehCapture.camera.samsung.so" ]; then
     if grep -q "ro.build.flavor" "$WORK_DIR/vendor/lib64/libDualCamBokehCapture.camera.samsung.so" 2> /dev/null; then
         SET_PROP "system" "ro.build.flavor" "$(GET_PROP "$FW_DIR/$TARGET_FIRMWARE_PATH/system/system/build.prop" "ro.build.flavor")"
     elif grep -q "ro.product.name" "$WORK_DIR/vendor/lib64/libDualCamBokehCapture.camera.samsung.so" 2> /dev/null; then

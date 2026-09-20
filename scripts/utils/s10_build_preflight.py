@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 from s10_firmware import verify, digest
 from s10_apex_input import verify as verify_apex
+from s10_metadata_plan import rows, context_key, item_kind
 
 
 def kernel(repo):
@@ -55,11 +56,38 @@ def work(root):
         for prefix in ('fs_config-', 'file_context-'):
             if not (root/'configs'/(prefix+part)).is_file():
                 raise ValueError('missing work metadata')
+    metadata(root)
+
+
+def metadata(root):
+    """Check complete final-tree metadata, after APK/RRO output creation."""
+    for part in ('system', 'vendor', 'product'):
+        fs = rows(root/'configs'/('fs_config-'+part), 'fs')
+        fc = rows(root/'configs'/('file_context-'+part), 'context')
+        paths = set()
+        for parent, dirs, files in os.walk(root/part, followlinks=False):
+            for name in dirs + files:
+                path = Path(parent)/name
+                item_kind(path)  # Refuse unsupported special inodes.
+                relative = path.relative_to(root/part).as_posix()
+                paths.add(relative if part == 'system' else part+'/'+relative)
+        expected_contexts = {context_key(path) for path in paths}
+        problems = {
+            'missing ownership': paths - fs.keys(),
+            'missing labels': expected_contexts - fc.keys(),
+            'stale ownership': fs.keys() - paths - {'', part},
+            'stale labels': fc.keys() - expected_contexts - {'/', '/'+part},
+            'duplicate ownership': {key for key, values in fs.items() if len(values) != 1},
+            'duplicate labels': {key for key, values in fc.items() if len(values) != 1},
+        }
+        for reason, keys in problems.items():
+            if keys:
+                raise ValueError(part + ': ' + reason + ': ' + ', '.join(sorted(keys)[:10]))
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action',choices=('kernel','inputs','work'))
+    p.add_argument('action',choices=('kernel','inputs','work','metadata'))
     p.add_argument('root',type=Path)
     p.add_argument('firmware',type=Path,nargs='?')
     a=p.parse_args()
@@ -67,6 +95,7 @@ def main():
         if a.firmware is None:raise ValueError('firmware root is required')
         inputs(a.root,a.firmware)
     elif a.action=='kernel':kernel(a.root)
+    elif a.action=='metadata':metadata(a.root)
     else:work(a.root)
 
 if __name__=='__main__':

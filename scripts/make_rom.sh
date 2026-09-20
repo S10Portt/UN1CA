@@ -170,6 +170,10 @@ if $BUILD_ROM; then
 
     BUILD_APKS
 
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        "$SRC_DIR/scripts/internal/finalize_s10.sh" || exit 1
+    fi
+
     echo -n "$(GET_WORK_DIR_HASH)" > "$WORK_DIR/.completed"
 fi
 
