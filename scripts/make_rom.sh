@@ -4,7 +4,7 @@
 
 # Validate offline S10 inputs before tools, network operations or work changes.
 if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
-    python3 "$SRC_DIR/scripts/utils/s10_build_preflight.py" inputs "$SRC_DIR" "$FW_DIR" || exit 1
+    python3 -B "$SRC_DIR/scripts/utils/s10_build_preflight.py" inputs "$SRC_DIR" "$FW_DIR" || exit 1
 fi
 
 # [
@@ -172,7 +172,7 @@ fi
 
 if $BUILD_TARGET_FILES || $BUILD_FLASHABLE_ZIP; then
     if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
-        python3 "$SRC_DIR/scripts/utils/s10_build_preflight.py" work "$WORK_DIR" || exit 1
+        python3 -B "$SRC_DIR/scripts/utils/s10_build_preflight.py" work "$WORK_DIR" || exit 1
     fi
     ZIP_FILE_NAME="${TARGET_CODENAME}_"
     if [ "$(GET_PROP "system" "ro.unica.version")" ]; then
