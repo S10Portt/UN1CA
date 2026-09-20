@@ -1,0 +1,187 @@
+{
+  "scope": "selected a73xqxx input snapshot, not final MIDAS runtime approval",
+  "entries": [
+    {
+      "key": "vendor/etc/midas",
+      "kind": "directory",
+      "sha256": null,
+      "fs": [
+        0,
+        2000,
+        493,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMQA_aiBLURESTIMATE_V100_FP32.tflite",
+      "kind": "file",
+      "sha256": "c563427bd108d8d8e97374bdc9478752db733975e6035a061302d330272b77fc",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMQA_aiNOISEDETECT_V100_FP32.tflite",
+      "kind": "file",
+      "sha256": "b212bfb9460e3f1258e62413e668862e149000dfccb59bde3a54ca1acccd8076",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiCLARITY2.0_2X_V200_FP32.caffemodel",
+      "kind": "file",
+      "sha256": "a52cc87854c75a689cc81e8f292882875d8200e78062dae68d871e897b179a83",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiDEBLUR_V140_FP32.tflite",
+      "kind": "file",
+      "sha256": "8e7dcd7239440878f288e18907bbef146f8bfae722b455df70e8be7d10670358",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiMOIREREMOVE_Coarse_V900_FP32.caffemodel",
+      "kind": "file",
+      "sha256": "ea9e1e9f1ac126f53658b6e2b56ce6436891a9a90b02cd2bba2653f5ac6602ab",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiMOIREREMOVE_Fine_V900_FP32.caffemodel",
+      "kind": "file",
+      "sha256": "9745359fc174786abd6a0eacf6725f898e0d4adda0669580e8d01c31f26e1ac4",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiUPSCALER_2X_LITE_V100_INT8.tflite",
+      "kind": "file",
+      "sha256": "8b0371357e59727a257488232fd75068b75ae71791dfd6d68001130b92668f59",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiUPSCALER_3X_LITE_V100_INT8.tflite",
+      "kind": "file",
+      "sha256": "34d674be7c3f7efbde6562da6c62319fcf296256638b147fdc98880094c7c071",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/SRIBMidas_aiUPSCALER_4X_LITE_V100_INT8.tflite",
+      "kind": "file",
+      "sha256": "a63a18bf3e00344a80b7b1dcbe610224ddfc5baa97657000946104a79c15f848",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/deflare",
+      "kind": "directory",
+      "sha256": null,
+      "fs": [
+        0,
+        2000,
+        493,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/deflare/srcb_flare_enhancement.tflite",
+      "kind": "file",
+      "sha256": "f6d183830cd442db4611144e307c1e1f2f7516558293d430945bc59fa51841f9",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    },
+    {
+      "key": "vendor/etc/midas/deflare/srcb_flare_estimate.tflite",
+      "kind": "file",
+      "sha256": "615a2e5a28fcfb61cc86c9c1958f16fa15aeea1c9850c0f0063e114586fa04fe",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "context": [
+        "u:object_r:vendor_configs_file:s0"
+      ]
+    }
+  ]
+}

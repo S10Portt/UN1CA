@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""GZH3 SurfaceFlinger: only check a supplied identification port for duplicates.
+"""QHD ESSI SurfaceFlinger: only check a supplied identification port for duplicates.
 
-Legacy composer clients can return UNSUPPORTED without setting outPort. GZH3
+Legacy composer clients can return UNSUPPORTED without setting outPort. GZD7
 checks that zero-initialized byte before assigning the legacy primary/secondary
 port. Keep duplicate checking for valid identification data, missing-data
 rejection in generalized mode, and the legacy two-display limit.
@@ -11,15 +11,15 @@ import hashlib
 from pathlib import Path
 import sys
 
-ORIGINAL_SHA256 = '86c628ec94691bd78a19136468190cfa85cd183d3144c9e861d1b76831861f43'
-PATCHED_SHA256 = '6017fe96033a1a4801cc708b694c8774ecf8aa7b2c29b57ccc2c7de7adc4cf31'
+ORIGINAL_SHA256 = '7dcb45d97b55230a5905dc39e7697f61f41080bc6a53f1a8db4bed8dd242f8b6'
+PATCHED_SHA256 = 'c3aefaf691bd68007ba4fd8abf8b13c310f5ae63d0ad6400fca35c60c3a78493'
 # File offsets equal virtual addresses in this pinned executable's .text.
 # Save the canary before the new branch. w21's port copy is no longer needed:
 # the duplicate-error log reads the already-saved port byte from the stack.
 EDITS = (
-    (0x4526ac, bytes.fromhex('f503022a'), bytes.fromhex('e80700f9')),  # mov w21,w2 -> str x8,[sp,#8]
-    (0x4526b0, bytes.fromhex('e80700f9'), bytes.fromhex('e3020034')),  # cbz w3,0x45270c
-    (0x4526d0, bytes.fromhex('a41e0012'), bytes.fromhex('e4134039')),  # ldrb w4,[sp,#4]
+    (0x45263c, bytes.fromhex('f503022a'), bytes.fromhex('e80700f9')),  # mov w21,w2 -> str x8,[sp,#8]
+    (0x452640, bytes.fromhex('e80700f9'), bytes.fromhex('e3020034')),  # cbz w3,0x45269c
+    (0x452660, bytes.fromhex('a41e0012'), bytes.fromhex('e4134039')),  # ldrb w4,[sp,#4]
 )
 
 

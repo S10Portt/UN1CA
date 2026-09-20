@@ -50,14 +50,18 @@ python3 -B -m unittest discover -s scripts/tests
 when set or the sibling `ArtisanROM_records` directory otherwise.
 
 The Exynos9820 modules provide legacy audio, vendor HALs, HRM, Bixby key,
-camera dependencies and stock cover assets. Target modules provide GZH3
-external-display identification, initial USB charging reapplication, the
-32-bit product ABI list, software A2DP enforcement and initial animation
+camera dependencies and stock cover assets. Target modules provide initial USB
+charging reapplication, the 32-bit product ABI list, software A2DP enforcement
+and initial animation
 defaults. Existing animation settings remain user-controlled.
 
 Board API remains `none`; legacy VNDK 31 is selected separately. S10 inherits
 shared ESSI source feature constants without modifying other ESSI targets.
-The GZH3 display patch and Bluetooth payload importer reject unknown inputs.
+Finalization runs after all modules, because QHD features replace SurfaceFlinger.
+It applies the pinned QHD donor's legacy display-port fix and the HWC1 HDMI
+output-flag fix, verifies the bounded GZH3 encoder patch, and checks complete
+file ownership/label coverage. Unknown native inputs abort the build.
+The Bluetooth payload importer also rejects unknown inputs.
 
 The shared UN1CA framework/APEX pipeline must also finish successfully.
 Final SELinux/VINTF validation, image and AVB checks, and on-device boot and
