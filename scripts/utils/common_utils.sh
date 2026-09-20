@@ -726,3 +726,8 @@ SET_PROP()
 
     return 0
 }
+
+# Keep firmware metadata validation local to the S10 port.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    source "$SRC_DIR/scripts/utils/s10_common_utils.sh" || return 1
+fi

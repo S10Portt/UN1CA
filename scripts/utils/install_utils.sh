@@ -76,6 +76,9 @@ PRINT_ASSERTIONS()
 
     local DEVICE
     DEVICE="$(grep "^device" <<< "$BUILD_INFO" | cut -d "=" -f 2 -s)"
+    if [[ "$DEVICE" == "beyond1lte" ]]; then
+        cat "$SRC_DIR/target/$DEVICE/installer/assertions.edify" || return 1
+    fi
 
     if [ "$(grep "^model" <<< "$BUILD_INFO" | cut -d "=" -f 2 -s)" ]; then
         local TARGET_ASSERT_MODEL
@@ -103,7 +106,7 @@ PRINT_ASSERTIONS()
         return 1
     fi
 
-    if [ -f "$SRC_DIR/target/$DEVICE/installer/assertions.edify" ]; then
+    if [[ "$DEVICE" != "beyond1lte" ]] && [ -f "$SRC_DIR/target/$DEVICE/installer/assertions.edify" ]; then
         cat "$SRC_DIR/target/$DEVICE/installer/assertions.edify"
     fi
 }

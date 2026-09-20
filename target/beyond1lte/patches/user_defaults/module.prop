@@ -1,0 +1,4 @@
+id=user_defaults
+name=Galaxy S10 user defaults
+author=ArtisanROM
+description=Selects software A2DP at boot and initializes animation scales without enabling developer options.

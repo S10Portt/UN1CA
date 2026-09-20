@@ -19,7 +19,11 @@ COPY_SOURCE_FIRMWARE()
             sed "/system_ext/d" "$FW_DIR/$SOURCE_FIRMWARE_PATH/fs_config-$f" > "$WORK_DIR/configs/fs_config-$f"
             if [[ "$f" == "product" ]]; then
                 LOG_STEP_IN
-                SET_PROP "product" "ro.product.product.name" "$(GET_PROP "$FW_DIR/$TARGET_FIRMWARE_PATH/product/etc/build.prop" "ro.product.product.name")"
+                if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+                    SET_PROP "product" "ro.product.product.name" "$(GET_PROP "$FW_DIR/$TARGET_FIRMWARE_PATH/vendor/build.prop" "ro.product.vendor.name")"
+                else
+                    SET_PROP "product" "ro.product.product.name" "$(GET_PROP "$FW_DIR/$TARGET_FIRMWARE_PATH/product/etc/build.prop" "ro.product.product.name")"
+                fi
                 LOG_STEP_OUT
             elif [[ "$f" == "system" ]]; then
                 LOG_STEP_IN
@@ -111,6 +115,16 @@ COPY_SOURCE_FIRMWARE()
 COPY_TARGET_FIRMWARE()
 {
     local TARGET_FOLDERS="odm odm_dlkm system_dlkm vendor vendor_dlkm"
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        TARGET_FOLDERS="vendor"
+        local auxiliary
+        for auxiliary in odm odm_dlkm system_dlkm vendor_dlkm prism optics up_param; do
+            if [[ -e "$WORK_DIR/$auxiliary" || -L "$WORK_DIR/$auxiliary" ]]; then
+                LOGE "Unexpected preserved partition in S10 work tree: $auxiliary"
+                return 1
+            fi
+        done
+    fi
     for f in $TARGET_FOLDERS; do
         if [ -d "$FW_DIR/$TARGET_FIRMWARE_PATH/$f" ]; then
             LOG "- Copying /$f from target firmware"
@@ -137,6 +151,16 @@ COPY_TARGET_FIRMWARE()
 
 COPY_TARGET_KERNEL()
 {
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        python3 "$SRC_DIR/scripts/utils/s10_build_preflight.py" kernel "$SRC_DIR" || return 1
+        mkdir -p "$WORK_DIR/kernel"
+        find "$WORK_DIR/kernel" -mindepth 1 -maxdepth 1 -type f -delete
+        local image
+        for image in boot.img dtb.img dtbo.img; do
+            cp "$SRC_DIR/target/beyond1lte/kernel/$image" "$WORK_DIR/kernel/$image" || return 1
+        done
+        return 0
+    fi
     if [ -d "$FW_DIR/$TARGET_FIRMWARE_PATH/kernel" ]; then
         LOG_STEP_IN "- Copying target firmware kernel images"
         EVAL "rsync -a --mkpath --delete \"$FW_DIR/$TARGET_FIRMWARE_PATH/kernel\" \"$WORK_DIR\"" || exit 1
@@ -150,8 +174,8 @@ COPY_TARGET_KERNEL()
 
 mkdir -p "$WORK_DIR"
 mkdir -p "$WORK_DIR/configs"
-COPY_SOURCE_FIRMWARE
-COPY_TARGET_FIRMWARE
-COPY_TARGET_KERNEL
+COPY_SOURCE_FIRMWARE || exit 1
+COPY_TARGET_FIRMWARE || exit 1
+COPY_TARGET_KERNEL || exit 1
 
 exit 0

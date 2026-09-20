@@ -2,6 +2,11 @@
 # Copyright (c) 2026 Salvo Giangreco
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# Reject preserved partitions even when this packaging script is invoked directly.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 -B "$SRC_DIR/scripts/utils/s10_build_preflight.py" work "$WORK_DIR" || exit 1
+fi
+
 # [
 source "$SRC_DIR/scripts/utils/install_utils.sh" || exit 1
 

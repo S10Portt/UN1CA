@@ -38,3 +38,5 @@ target/beyond1lte/kernel/*.img binary
 target/beyond1lte/layouts/measurement/** -text
 # Unified diffs contain required blank context lines prefixed with one space.
 target/beyond1lte/patches/**/*.patch whitespace=-blank-at-eol
+
+platform/exynos9820/patches/**/vendor/** binary

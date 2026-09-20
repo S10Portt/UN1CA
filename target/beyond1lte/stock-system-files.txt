@@ -1,0 +1,16 @@
+# Required by exynos9820 stock_blobs and hrm for beyond1lte. Not the full donor closure.
+system/etc/permissions/android.hardware.sensor.heartrate.xml
+system/etc/permissions/com.sec.feature.cover.clearcover.xml
+system/etc/permissions/com.sec.feature.cover.flip.xml
+system/etc/permissions/com.sec.feature.cover.ledbackcover.xml
+system/etc/permissions/com.sec.feature.cover.nfcledcover.xml
+system/etc/permissions/com.sec.feature.cover.sview.xml
+system/etc/permissions/com.sec.feature.cover.xml
+system/etc/permissions/com.sec.feature.nfc_authentication_cover.xml
+system/etc/permissions/com.sec.feature.spo2.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.app.ledbackcover.xml
+system/etc/permissions/privapp-permissions-com.sec.android.service.health.xml
+system/lib64/libhr.so
+system/priv-app/DevGPUDriver-EX9820/DevGPUDriver-EX9820.apk
+system/priv-app/GameDriver-EX9820/GameDriver-EX9820.apk
+system/priv-app/LedBackCoverAppBeyond/LedBackCoverAppBeyond.apk

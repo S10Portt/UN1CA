@@ -1,0 +1,73 @@
+{
+  "id": "hwc1-gzd7-task-profiles",
+  "scope": "six HWC1 JSON files; preserve uid/gid/mode/capability; use GZD7 path policy label",
+  "gzd7_policy_sha256": "df2c81add304fa5ca0e0724ad42c0d7fd6fd443b6da7fdc085df5f03a7823c9c",
+  "entries": {
+    "system/etc/task_profiles/cgroups_28.json": {
+      "sha256": "18497edda1c81883eac3063708ded1b7deb493c519d6ae320b3048c5e090056c",
+      "source": {
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "capabilities": "0x0",
+        "selinux": "u:object_r:cgroup_desc_api_file:s0"
+      },
+      "target_label": "u:object_r:cgroup_desc_file:s0"
+    },
+    "system/etc/task_profiles/cgroups_29.json": {
+      "sha256": "18497edda1c81883eac3063708ded1b7deb493c519d6ae320b3048c5e090056c",
+      "source": {
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "capabilities": "0x0",
+        "selinux": "u:object_r:cgroup_desc_api_file:s0"
+      },
+      "target_label": "u:object_r:cgroup_desc_file:s0"
+    },
+    "system/etc/task_profiles/cgroups_30.json": {
+      "sha256": "161b4354ba862af4f24808d5ced6716bd20ee7af5ef76efe9efafc92879fce65",
+      "source": {
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "capabilities": "0x0",
+        "selinux": "u:object_r:cgroup_desc_api_file:s0"
+      },
+      "target_label": "u:object_r:cgroup_desc_file:s0"
+    },
+    "system/etc/task_profiles/task_profiles_28.json": {
+      "sha256": "73390ed917986dc2c759128039b576d3626aaa3bbad3b9d3f14b619071071357",
+      "source": {
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "capabilities": "0x0",
+        "selinux": "u:object_r:task_profiles_api_file:s0"
+      },
+      "target_label": "u:object_r:task_profiles_file:s0"
+    },
+    "system/etc/task_profiles/task_profiles_29.json": {
+      "sha256": "73390ed917986dc2c759128039b576d3626aaa3bbad3b9d3f14b619071071357",
+      "source": {
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "capabilities": "0x0",
+        "selinux": "u:object_r:task_profiles_api_file:s0"
+      },
+      "target_label": "u:object_r:task_profiles_file:s0"
+    },
+    "system/etc/task_profiles/task_profiles_30.json": {
+      "sha256": "73390ed917986dc2c759128039b576d3626aaa3bbad3b9d3f14b619071071357",
+      "source": {
+        "uid": 0,
+        "gid": 0,
+        "mode": "644",
+        "capabilities": "0x0",
+        "selinux": "u:object_r:task_profiles_api_file:s0"
+      },
+      "target_label": "u:object_r:task_profiles_file:s0"
+    }
+  }
+}

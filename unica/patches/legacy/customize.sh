@@ -400,18 +400,23 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
     write /dev/stune/nnapi-hal/schedtune.prefer_idle 1\" \"$WORK_DIR/system/system/etc/init/hw/init.rc\""
         fi
 
+        TASK_PROFILE_METADATA_POLICY=""
+        if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+            TASK_PROFILE_METADATA_POLICY="hwc1-gzd7-task-profiles"
+        fi
         ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
-            "system/etc/task_profiles/cgroups_28.json" 0 0 644 "u:object_r:cgroup_desc_file:s0"
+            "system/etc/task_profiles/cgroups_28.json" 0 0 644 "u:object_r:cgroup_desc_file:s0" "$TASK_PROFILE_METADATA_POLICY"
         ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
-            "system/etc/task_profiles/cgroups_29.json" 0 0 644 "u:object_r:cgroup_desc_file:s0"
+            "system/etc/task_profiles/cgroups_29.json" 0 0 644 "u:object_r:cgroup_desc_file:s0" "$TASK_PROFILE_METADATA_POLICY"
         ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
-            "system/etc/task_profiles/cgroups_30.json" 0 0 644 "u:object_r:cgroup_desc_file:s0"
+            "system/etc/task_profiles/cgroups_30.json" 0 0 644 "u:object_r:cgroup_desc_file:s0" "$TASK_PROFILE_METADATA_POLICY"
         ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
-            "system/etc/task_profiles/task_profiles_28.json" 0 0 644 "u:object_r:task_profiles_file:s0"
+            "system/etc/task_profiles/task_profiles_28.json" 0 0 644 "u:object_r:task_profiles_file:s0" "$TASK_PROFILE_METADATA_POLICY"
         ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
-            "system/etc/task_profiles/task_profiles_29.json" 0 0 644 "u:object_r:task_profiles_file:s0"
+            "system/etc/task_profiles/task_profiles_29.json" 0 0 644 "u:object_r:task_profiles_file:s0" "$TASK_PROFILE_METADATA_POLICY"
         ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" \
-            "system/etc/task_profiles/task_profiles_30.json" 0 0 644 "u:object_r:task_profiles_file:s0"
+            "system/etc/task_profiles/task_profiles_30.json" 0 0 644 "u:object_r:task_profiles_file:s0" "$TASK_PROFILE_METADATA_POLICY"
+        unset TASK_PROFILE_METADATA_POLICY
     fi
 
     unset KERNEL_VERSION LEGACY_KERNEL
@@ -473,11 +478,15 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             ABORT "No known patch available for the supplied libstagefright.so"
         fi
         if [ -f "$WORK_DIR/system/system/priv-app/GlobalPostProcMgr/GlobalPostProcMgr.apk" ]; then
+            # GZH3 assigns the default color-format integer to v4.
+            GLOBAL_ENCODER_REGISTER=v3
+            [[ "$TARGET_CODENAME" == "beyond1lte" ]] && GLOBAL_ENCODER_REGISTER=v4
             SMALI_PATCH "system" "system/priv-app/GlobalPostProcMgr/GlobalPostProcMgr.apk" \
                 "smali/com/samsung/android/sum/core/filter/EncoderFilter.smali" "replace" \
                 'configCodec(Lcom/samsung/android/sum/core/message/Message;)V' \
-                'const v3, 0x7f420888' \
-                'const v3, 0x7f000789'
+                "const $GLOBAL_ENCODER_REGISTER, 0x7f420888" \
+                "const $GLOBAL_ENCODER_REGISTER, 0x7f000789"
+            unset GLOBAL_ENCODER_REGISTER
         fi
         SMALI_PATCH "system" "system/priv-app/SamsungCamera/SamsungCamera.apk" \
             "smali_classes3/com/samsung/android/sum/core/filter/EncoderFilter.smali" "replace" \
