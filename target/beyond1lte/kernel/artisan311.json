@@ -1,0 +1,9 @@
+{
+  "source": "ArtisanROM_OFFICIAL_3.1.1_20260428_beyond1lte-sign; user-provided working S10 ROM",
+  "scope": "Input provenance only; not approval of final ramdisk, device trees, AVB or S908B boot compatibility",
+  "sha256": {
+    "boot.img": "87536baccb5722633bec8543ab2421765e4614ab10095693886b1d361996e1e4",
+    "dtb.img": "281b908f1049af0bfc4d795c52ba163c7710196380f9b147abb786ce06b58e9b",
+    "dtbo.img": "cf54186babb2635f40fdaa4a3c824ff6de7e53367e4316391c26b9534e10bf6a"
+  }
+}

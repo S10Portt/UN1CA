@@ -140,7 +140,7 @@ if $TARGET_USE_DYNAMIC_PARTITIONS; then
 fi
 
 if [ -d "$WORK_DIR/kernel" ]; then
-    KERNEL_BINS="boot.img dt.img dtbo.img init_boot.img vendor_boot.img"
+    KERNEL_BINS="boot.img dt.img dtb.img dtbo.img init_boot.img vendor_boot.img"
 
     for f in $KERNEL_BINS; do
         [ ! -f "$WORK_DIR/kernel/$f" ] && continue

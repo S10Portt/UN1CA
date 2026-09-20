@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "user-repartition-20260913",
+  "target": "beyond1lte",
+  "measurement": "target/beyond1lte/layouts/measurement/layout.json",
+  "measurement_sha256": "5b331c34ceef922602b0ff3d771dc4bf19ac2f32ed5b0d89c3d62a8eb711e4db",
+  "scope": "Only the supplied user device capture; not a stock or universal S10 layout.",
+  "installation_approved": false,
+  "auxiliary_policy": {
+    "odm": "unresolved",
+    "prism": "unresolved",
+    "optics": "unresolved"
+  }
+}

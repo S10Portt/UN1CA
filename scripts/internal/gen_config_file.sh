@@ -63,6 +63,16 @@ else
     source "$SRC_DIR/unica/configs/$TARGET_OS_SINGLE_SYSTEM_IMAGE.sh" || exit 1
 fi
 
+# Validate the selected S10 measurements before publishing any build limits.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    source "$SRC_DIR/unica/configs/essi_s10.sh" || exit 1
+    S10_LIMITS="$(python3 "$SRC_DIR/scripts/utils/s10_layout.py" "$SRC_DIR" "$TARGET_LAYOUT_PROFILE")" || exit 1
+    while IFS=$'\t' read -r NAME VALUE; do
+        printf -v "$NAME" '%s' "$VALUE"
+    done <<< "$S10_LIMITS"
+    unset S10_LIMITS NAME VALUE
+fi
+
 if [ -f "$OUT_DIR/config.sh" ]; then
     LOGW "config.sh already exists. Regenerating"
     rm -f "$OUT_DIR/config.sh"
@@ -487,6 +497,11 @@ fi
     GET_BUILD_VAR "TARGET_PLATFORM_SDK_VERSION"
     GET_BUILD_VAR "TARGET_PRODUCT_SHIPPING_API_LEVEL"
     GET_BUILD_VAR "TARGET_BOARD_API_LEVEL"
+    GET_BUILD_VAR "TARGET_LEGACY_VNDK_VERSION" "none"
+    GET_BUILD_VAR "SOURCE_FIRMWARE_OFFLINE" "false"
+    GET_BUILD_VAR "TARGET_FIRMWARE_OFFLINE" "false"
+    GET_BUILD_VAR "TARGET_LAYOUT_PROFILE" "none"
+    GET_BUILD_VAR "TARGET_DTB_PARTITION_SIZE" "none"
     GET_BUILD_VAR "TARGET_DISABLE_AVB_SIGNING" "false"
     GET_BUILD_VAR "TARGET_INCLUDE_PATCHED_VBMETA" "false"
     GET_BUILD_VAR "TARGET_KEEP_ORIGINAL_SIGN" "false"

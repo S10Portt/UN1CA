@@ -1,0 +1,40 @@
+Subject: [PATCH] Reapply S10 initial charging after MTP is ready
+
+--- a/smali_classes2/com/android/server/usb/UsbDeviceManager.smali
++++ b/smali_classes2/com/android/server/usb/UsbDeviceManager.smali
+@@ -775,6 +775,35 @@
+ 
+     move-result v2
+ 
++    # The boot-time MTP bind may predate nativeOpenControl(). Reapply the
++    # initial charging configuration once its control descriptor is ready.
++    iget-object v4, v1, Lcom/android/server/usb/UsbDeviceManager$UsbHandlerLegacy;->mCurrentFunctionsStr:Ljava/lang/String;
++
++    const-string v5, "sec_charging"
++
++    invoke-virtual {v5, v4}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++
++    move-result v4
++
++    if-eqz v4, :s10_usb_initial_applied
++
++    iget-object v4, v3, Lcom/android/server/usb/UsbDeviceManager;->mControlFds:Ljava/util/HashMap;
++
++    const-wide/16 v5, 0x4
++
++    invoke-static {v5, v6}, Ljava/lang/Long;->valueOf(J)Ljava/lang/Long;
++
++    move-result-object v5
++
++    invoke-virtual {v4, v5}, Ljava/util/HashMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
++
++    move-result-object v4
++
++    if-eqz v4, :s10_usb_initial_applied
++
++    const/4 v2, 0x0
++
++    :s10_usb_initial_applied
+     iput-boolean v2, v1, Lcom/android/server/usb/UsbDeviceManager$UsbHandler;->mCurrentFunctionsApplied:Z
+ 
+     goto :goto_6

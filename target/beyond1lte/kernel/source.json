@@ -1,0 +1,6 @@
+{
+  "repository": "https://github.com/ArtisanRomS10/android_kernel_samsung_exynos9820.git",
+  "commit": "bf6931b605aacb7f434d6ff440344a0c3e1f92e1",
+  "local_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "Pinned Exynos9820 source revision; includes selected cgroup fixes and KernelSU removal. Image hashes are recorded separately."
+}

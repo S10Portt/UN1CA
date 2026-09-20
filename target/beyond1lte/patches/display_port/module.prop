@@ -1,0 +1,4 @@
+id=display_port
+name=Galaxy S10 legacy display identification
+author=ArtisanROM
+description=Restore the legacy port fallback for the registered GZH3 SurfaceFlinger.
