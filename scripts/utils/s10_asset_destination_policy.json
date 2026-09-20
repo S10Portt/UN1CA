@@ -1,0 +1,235 @@
+{
+  "scope": "Explicit destination metadata retention for 13 previously uncovered asset paths and shared HRM parent; replacement contents are repository assets, not claimed identical to donor",
+  "entries": [
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib",
+      "kind": "directory",
+      "asset_sha256": null,
+      "expected_fs": [
+        0,
+        2000,
+        493,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib/android.hardware.audio.common-util.so",
+      "kind": "file",
+      "asset_sha256": "6b0b491a6e15c71bff172684a6d7fab1669caae88772753ab520192b3347a0fd",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib/android.hardware.audio.common@2.0-util.so",
+      "kind": "file",
+      "asset_sha256": "d18c78d9f3dad764e3a64d496d3856ed239106ca130b7312ed727690fab187ba",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib/hw",
+      "kind": "directory",
+      "asset_sha256": null,
+      "expected_fs": [
+        0,
+        2000,
+        493,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_hal_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib/hw/android.hardware.audio.effect@2.0-impl.so",
+      "kind": "file",
+      "asset_sha256": "3d71651aa903667e44155fa13ff2874bb9929c56ecc2c3df69988cdf5aed8788",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib/hw/android.hardware.audio@2.0-impl.so",
+      "kind": "file",
+      "asset_sha256": "ff31edf4ab4b1b55c0edb255df90d899c5fac8f7064994fc56f6a57f60d90fee",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib64/android.hardware.audio.common-util.so",
+      "kind": "file",
+      "asset_sha256": "d72d1ed5ebb0f7762428647e91104b27554db43dabca2d463cec02932c8db9a0",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib64/android.hardware.audio.common@2.0-util.so",
+      "kind": "file",
+      "asset_sha256": "c339b5b276af9c69876ac11d0aa2138d0ef8eec0d19616337dac4bd152fe029a",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib64/hw",
+      "kind": "directory",
+      "asset_sha256": null,
+      "expected_fs": [
+        0,
+        2000,
+        493,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_hal_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib64/hw/android.hardware.audio.effect@2.0-impl.so",
+      "kind": "file",
+      "asset_sha256": "fadddfca1cb137d2de59f5b25e8f7c62a2e33fd82ab6bc94d0fb4a4c01f0f6fe",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/audio",
+      "key": "vendor/lib64/hw/android.hardware.audio@2.0-impl.so",
+      "kind": "file",
+      "asset_sha256": "334d70582cda1034190215e8e5fa380ab960441b4a4e60be2e8443211cf6e641",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/vendor",
+      "key": "vendor/etc/fstab.exynos9820",
+      "kind": "file",
+      "asset_sha256": "f337ea7ab8f7b6cafeb0ae314918c526eebb20ebe11ee96ea3de9685c15c7cda",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_configs_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/vendor",
+      "key": "vendor/lib64/libsec-ril.so",
+      "kind": "file",
+      "asset_sha256": "3e097cf9a24454c70a92f360d67e2a312d6e0aa45208ee3c31ca65997e4c486e",
+      "expected_fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:vendor_file:s0"
+      ],
+      "reason": "retain observed HWC1 destination policy for selected replacement; require identical work policy before automatic copy"
+    },
+    {
+      "module": "platform/exynos9820/patches/hrm",
+      "key": "system/priv-app",
+      "kind": "directory",
+      "asset_sha256": null,
+      "expected_fs": [
+        0,
+        0,
+        493,
+        0
+      ],
+      "expected_context": [
+        "u:object_r:system_file:s0"
+      ],
+      "reason": "retain shared GZD7 parent directory policy; do not change it for one application"
+    }
+  ],
+  "source_metadata_sha256": {
+    "SM-G973F_AUT/fs_config-vendor": "e80dc2b113330dafcd7c2534311d3ee5f9ba6034c99d3376e319b77b085b000b",
+    "SM-G973F_AUT/file_context-vendor": "3154698d1fd65f83646211d78c95133368ad0e7b40fc758c31bb2a70ff7d0039",
+    "SM-S908B_EUX/fs_config-system": "787fb1c82bac8d97d4047c13de70626943611a89902cbd154a01957d21e0ed9d",
+    "SM-S908B_EUX/file_context-system": "5f53e3a4f3cac4d9fa9d1e1f4f5247f5916aa895da7cf99d451a71d8c94fc63a"
+  }
+}

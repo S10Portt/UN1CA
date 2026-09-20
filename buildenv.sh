@@ -59,9 +59,12 @@ run_cmd()
 
     if [ -x "$SRC_DIR/scripts/$CMD.sh" ]; then
         shift
-        mkdir -p "$(dirname "$WORK_DIR")"
+        local RECORDS_DIR
+        RECORDS_DIR="$(realpath -m "${ARTISANROM_RECORDS_DIR:-$SRC_DIR/../ArtisanROM_records}")" || return 1
+        case "$RECORDS_DIR/" in "$SRC_DIR/"*) echo "Records directory must be outside source checkout" >&2; return 1;; esac
+        mkdir -p "$RECORDS_DIR" || return 1
         (set -o pipefail; "$SRC_DIR/scripts/$CMD.sh" "$@" |& tee \
-            >(sed -r -e "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" -e "/#/d" > "$(dirname "$WORK_DIR")/$CMD-$(date +%Y%m%d_%H%M%S).log"))
+            >(sed -r -e "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2};?)?)?[mGK]//g" -e "/#/d" > "$RECORDS_DIR/un1ca-$TARGET_CODENAME-$CMD-$(date +%Y%m%d_%H%M%S).log"))
         return $?
     else
         local CMDS=()
@@ -101,6 +104,7 @@ unset -f _GET_SRC_DIR
 
 export DEBUG=false
 export SRC_DIR
+export PYTHONDONTWRITEBYTECODE=1
 export OUT_DIR="$SRC_DIR/out"
 export ODIN_DIR="$OUT_DIR/odin"
 export FW_DIR="$OUT_DIR/fw"

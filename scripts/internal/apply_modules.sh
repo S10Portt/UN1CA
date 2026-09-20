@@ -32,6 +32,14 @@ APPLY_MODULE()
         MODAUTH="$(grep "^author" "$MODPATH/module.prop" | sed "s/author=//" | sed "s/, /, @/g")"
     fi
 
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        [[ "$MODPATH" == "$SRC_DIR/unica/mods/preload" ]] && return 0
+        case "$MODPATH" in
+            "$SRC_DIR/platform/exynos9820/patches/audio"|"$SRC_DIR/platform/exynos9820/patches/vendor"|"$SRC_DIR/platform/exynos9820/patches/hrm")
+                python3 "$SRC_DIR/scripts/utils/s10_asset_destination_policy.py" "$MODPATH" "$WORK_DIR" "$SRC_DIR" || return 1 ;;
+        esac
+    fi
+
     LOG_STEP_IN "- Processing \"$MODNAME\" by @$MODAUTH"
 
     if ! grep -q "^SKIPUNZIP=1$" "$MODPATH/customize.sh" 2> /dev/null; then

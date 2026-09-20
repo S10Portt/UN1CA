@@ -1,0 +1,2 @@
+/system/etc/init/s10-user-defaults\.rc u:object_r:system_file:s0
+/system/etc/s10-user-defaults\.sh u:object_r:system_file:s0

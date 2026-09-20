@@ -88,6 +88,11 @@ DECODE_APK_IN_APEX()
 
 EXTRACT_PAYLOAD()
 {
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        python3 -B "$SRC_DIR/scripts/utils/s10_apex_input.py" stage \
+            "$OUT_DIR/apex-inputs/gzh3-bluetooth" "$TMP_DIR/unknown/apex_payload.img" "$TMP_DIR/unknown" || return 1
+        return 0
+    fi
     LOG_STEP_IN "- Unpacking apex_payload.img"
 
     if ! sudo -n -v &> /dev/null; then

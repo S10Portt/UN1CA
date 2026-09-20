@@ -1,0 +1,31 @@
+{
+  "source": "ArtisanROM_OFFICIAL_3.1.1_20260428_beyond1lte-sign (user-provided extracted working ROM)",
+  "reference_commit": "fc385707b850ec5a2676f03771967b7bb78022e9",
+  "reference_script": "unica/patches/miscs/customize.sh",
+  "scope": "Portrait property compatibility only; not approval of the full vendor or new system runtime.",
+  "sha256": {
+    "vendor/lib/libDualCamBokehCapture.camera.samsung.so": "bfbe1fd10c4f9f6e82362133326cb34b9627b18d7adccbb3e87be1bc87c7e65f",
+    "vendor/lib/liblivefocus_capture_engine.so": "6df2d24af691e93a7e5d04a8b901794ee473e848b26c4d7732da64ddbc0733cd",
+    "vendor/lib/liblivefocus_preview_engine.so": "feee2fb2440e2bf2b552d8d2e2362f47f5ef9792e3781798b0f2b2936839914b",
+    "vendor/lib64/libDualCamBokehCapture.camera.samsung.so": "030f534658b980c36a8f3ac89cef461250867a89b26ecd72d006872d3ff30208",
+    "vendor/lib64/liblivefocus_capture_engine.so": "968c18bba9124a8318f582608727135818646a990dc1ca4ad1374dbd967471f1",
+    "vendor/lib64/liblivefocus_preview_engine.so": "0ef1a98c8d407e261e6f75ce70e3d84704451dbc1428fb671d663c4c4446a8de"
+  },
+  "raw_source": "SAMFW.COM_SM-G973F_AUT_G973FXXSGHWC1_fac; user-provided extracted stock firmware",
+  "raw_sha256": {
+    "vendor/lib/libDualCamBokehCapture.camera.samsung.so": "5228994642017113f3d253e43768976fbf5fcbf5a01ab87661d7e82fb40c3e43",
+    "vendor/lib/liblivefocus_capture_engine.so": "d2d37b5aebba7701f795baea7ad72495ba14960d0f18818612f1d2d2a4991255",
+    "vendor/lib/liblivefocus_preview_engine.so": "9325547a6e1675f61a6d61fb3185a4a4ac0842ac4a106f153b92b6f17831babe",
+    "vendor/lib64/libDualCamBokehCapture.camera.samsung.so": "042541a0499dd0957dc97ecc36135c158ba71c6d19ec5bc33e1b66bafc73c2aa",
+    "vendor/lib64/liblivefocus_capture_engine.so": "3f61d468d4fb84832ecea741a7900ba1bc7e89ea1987b6576aa96a370c00b8fb",
+    "vendor/lib64/liblivefocus_preview_engine.so": "ef3227f0ac15f39130fe807043e2331e0b5d9aa18dbabb73e79a038b479598ee"
+  },
+  "replacement_count": {
+    "vendor/lib/libDualCamBokehCapture.camera.samsung.so": 3,
+    "vendor/lib/liblivefocus_capture_engine.so": 3,
+    "vendor/lib/liblivefocus_preview_engine.so": 3,
+    "vendor/lib64/libDualCamBokehCapture.camera.samsung.so": 3,
+    "vendor/lib64/liblivefocus_capture_engine.so": 3,
+    "vendor/lib64/liblivefocus_preview_engine.so": 3
+  }
+}

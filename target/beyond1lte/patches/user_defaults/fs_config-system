@@ -1,0 +1,2 @@
+system/etc/init/s10-user-defaults.rc 0 0 644 capabilities=0x0
+system/etc/s10-user-defaults.sh 0 0 644 capabilities=0x0

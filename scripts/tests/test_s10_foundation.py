@@ -82,7 +82,7 @@ source "$1"
     def test_make_rom_stops_before_tools_or_downloads(self):
         p=subprocess.run(['bash',str(ROOT/'scripts/make_rom.sh')],env=dict(os.environ,SRC_DIR=str(ROOT),TARGET_CODENAME='beyond1lte'),capture_output=True,text=True)
         self.assertNotEqual(p.returncode,0)
-        self.assertIn('incomplete',p.stderr+p.stdout)
+        self.assertIn('S10 preflight:',p.stderr+p.stdout)
 
     def test_installation_remains_disabled(self):
         p=ROOT/'target/beyond1lte/installer/assertions.edify'

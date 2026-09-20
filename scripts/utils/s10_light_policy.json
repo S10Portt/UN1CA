@@ -1,0 +1,45 @@
+{
+  "id": "s10-p3s-light-v1",
+  "scope": "selected repository binaries; no added file capabilities; unchanged init system UID/GID service",
+  "entries": [
+    {
+      "key": "vendor/bin/hw/vendor.samsung.hardware.light-service",
+      "sha256": "b07a67bc3976ce3e3b38882a17e29c1caa9fb714250aa258fafd3d9ab1ab70b1",
+      "fs": [
+        0,
+        2000,
+        493,
+        0
+      ],
+      "label": "u:object_r:hal_light_default_exec:s0",
+      "expected_original_sha256": "ae725be74ca9ef32a48af35d59ddb5628f6ceef961ad0b41d7669ec94171dc96",
+      "policy": "retain observed destination metadata"
+    },
+    {
+      "key": "vendor/lib64/android.hardware.light-V1-ndk_platform.so",
+      "sha256": "9b443e5cee1645d80d5c5dbd892358ef9fdda0696f6d8a70a340b1e430b35504",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "label": "u:object_r:vendor_file:s0",
+      "expected_original_sha256": null,
+      "policy": "new non-executable shared library: 0:0/0644 vendor_file, no file capabilities; explicit destination policy, not original xattr claim"
+    },
+    {
+      "key": "vendor/lib64/vendor.samsung.hardware.light-V1-ndk_platform.so",
+      "sha256": "14e75b0095cd0ae5f90dbcf7d6a0bf47e63cac7179b73ef4e3d8fb10821a3184",
+      "fs": [
+        0,
+        0,
+        420,
+        0
+      ],
+      "label": "u:object_r:vendor_file:s0",
+      "expected_original_sha256": "cf9d6239edaf67a278abf24f4c386b1eaa84062b357d2e8029e7577e498413d3",
+      "policy": "retain observed destination metadata"
+    }
+  ]
+}

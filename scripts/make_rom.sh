@@ -2,10 +2,9 @@
 # Copyright (c) 2025 Salvo Giangreco
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# The target skeleton is not yet a complete hardware port.
+# Validate offline S10 inputs before tools, network operations or work changes.
 if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
-    echo "S10 input registration and hardware module integration are incomplete. See target/beyond1lte/README.md" >&2
-    exit 1
+    python3 "$SRC_DIR/scripts/utils/s10_build_preflight.py" inputs "$SRC_DIR" "$FW_DIR" || exit 1
 fi
 
 # [
@@ -46,7 +45,7 @@ BUILD_APKS()
 GET_WORK_DIR_HASH()
 {
     if [ "${TARGET_PLATFORM//none/}" ] && [ -d "$SRC_DIR/platform/$TARGET_PLATFORM" ]; then
-        find "$SRC_DIR/unica" "$SRC_DIR/platform/$TARGET_PLATFORM" "$SRC_DIR/target/$TARGET_CODENAME" -type f -print0 | \
+        find "$SRC_DIR/scripts" "$SRC_DIR/unica" "$SRC_DIR/platform/$TARGET_PLATFORM" "$SRC_DIR/target/$TARGET_CODENAME" -type f -print0 | \
             sort -z | xargs -0 sha1sum | sha1sum | cut -d " " -f 1
     else
         find "$SRC_DIR/unica" "$SRC_DIR/target/$TARGET_CODENAME" -type f -print0 | \
@@ -129,7 +128,7 @@ if $BUILD_ROM; then
     [ -d "$APKTOOL_DIR" ] && rm -rf "$APKTOOL_DIR"
     [ -f "$WORK_DIR/.completed" ] && rm -f "$WORK_DIR/.completed"
 
-    if [ ! -f "$FW_DIR/$SOURCE_FIRMWARE_PATH/.extracted" ] || [ ! -f "$FW_DIR/$TARGET_FIRMWARE_PATH/.extracted" ]; then
+    if [[ "$TARGET_CODENAME" != "beyond1lte" ]] && { [ ! -f "$FW_DIR/$SOURCE_FIRMWARE_PATH/.extracted" ] || [ ! -f "$FW_DIR/$TARGET_FIRMWARE_PATH/.extracted" ]; }; then
         if [ ! -f "$ODIN_DIR/$SOURCE_FIRMWARE_PATH/.downloaded" ] || [ ! -f "$ODIN_DIR/$TARGET_FIRMWARE_PATH/.downloaded" ]; then
             LOG_STEP_IN true "Downloading required firmwares"
             "$SRC_DIR/scripts/download_fw.sh" || exit 1
@@ -172,6 +171,9 @@ if $BUILD_ROM; then
 fi
 
 if $BUILD_TARGET_FILES || $BUILD_FLASHABLE_ZIP; then
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        python3 "$SRC_DIR/scripts/utils/s10_build_preflight.py" work "$WORK_DIR" || exit 1
+    fi
     ZIP_FILE_NAME="${TARGET_CODENAME}_"
     if [ "$(GET_PROP "system" "ro.unica.version")" ]; then
         ZIP_FILE_NAME+="$(GET_PROP "system" "ro.unica.version")"
@@ -180,7 +182,7 @@ if $BUILD_TARGET_FILES || $BUILD_FLASHABLE_ZIP; then
     fi
     ZIP_FILE_NAME+="-target_files.zip"
 
-    if [ ! -f "$OUT_DIR/$ZIP_FILE_NAME" ]; then
+    if [ ! -f "$OUT_DIR/$ZIP_FILE_NAME" ] || { [[ "$TARGET_CODENAME" == "beyond1lte" ]] && $BUILD_ROM; }; then
         LOG_STEP_IN true "Creating target-files zip"
         "$SRC_DIR/scripts/internal/create_target_files_zip.sh" "$OUT_DIR/$ZIP_FILE_NAME" || exit 1
         LOG_STEP_OUT

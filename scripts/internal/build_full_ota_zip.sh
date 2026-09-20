@@ -299,4 +299,8 @@ else
     mv -f "$TMP_DIR/rom.zip" "$OUTPUT_FILE"
 fi
 
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 "$SRC_DIR/scripts/utils/s10_installer_guard.py" "$SRC_DIR" "$OUTPUT_FILE" || exit 1
+fi
+
 exit 0

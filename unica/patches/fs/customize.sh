@@ -3,6 +3,10 @@ PARTITIONS_LIST="system vendor product system_ext odm vendor_dlkm odm_dlkm syste
 
 PATCH_FSTAB()
 {
+    if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+        python3 "$SRC_DIR/scripts/utils/s10_fstab.py" "$1" --os-fs "$TARGET_OS_FILE_SYSTEM_TYPE" --apply || return 1
+        return 0
+    fi
     local f
 
     while IFS= read -r f; do
