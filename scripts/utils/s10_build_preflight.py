@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 from s10_firmware import verify, digest
+from s10_auxiliary_images import verify as verify_auxiliary
 from s10_apex_input import verify as verify_apex
 from s10_metadata_plan import rows, context_key, item_kind
 
@@ -36,6 +37,7 @@ def inputs(repo, fw):
     subprocess.run(['python3', str(repo / 'scripts/utils/s10_layout.py'), str(repo), profile, '--check',
                     *[f'TARGET_{k}_PARTITION_SIZE='+os.environ.get(f'TARGET_{k}_PARTITION_SIZE','') for k in keys]], check=True)
     kernel(repo)
+    verify_auxiliary(Path(os.environ["OUT_DIR"]) / "inputs/s10-auxiliary", repo)
     for name in ('SM-S901B_EUX', 'SM-G973F_AUT'):
         verify(fw / name)
     verify_apex(fw.parent / 'apex-inputs/gzh3-bluetooth')

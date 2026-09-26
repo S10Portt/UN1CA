@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 import shutil
 import sys
-from s10_installer_guard import ABORT, PREFLIGHT, check, code, _assertions_abort_present
+from s10_installer_guard import ABORT, PREFLIGHT, POSTINSTALL, AUX_PARTITIONS, check, code, _assertions_abort_present
 
 
 def prepare(repo,stage):
@@ -27,6 +27,13 @@ def prepare(repo,stage):
         text,count=re.subn(pattern,lambda m:'assert('+m.group()[:-1]+');',text,flags=re.M)
         if count!=1:raise ValueError('missing/duplicate kernel write: '+image)
     lines=text.splitlines()
+    kernel_positions = [i for i, line in enumerate(lines)
+                        if line.strip() in {f'assert(package_extract_file("{p}.img", "/dev/block/by-name/{p}"));'
+                                            for p in ('boot', 'dtb', 'dtbo')}]
+    auxiliary = [f'assert(package_extract_file("{p}.img", "/dev/block/by-name/{p}"));'
+                 for p in AUX_PARTITIONS]
+    lines[min(kernel_positions):min(kernel_positions)] = auxiliary + list(POSTINSTALL)
+    shutil.copyfile(repo/'target/beyond1lte/installer/auxiliary-postinstall.sh', stage/'auxiliary-postinstall.sh')
     insert = next(i for i, line in enumerate(lines) if line.strip() == ABORT) + 1 if abort_present else 0
     lines[insert:insert]=list(PREFLIGHT)
     script.write_text('\n'.join(lines)+'\n')

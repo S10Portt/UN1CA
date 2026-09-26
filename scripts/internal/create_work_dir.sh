@@ -120,7 +120,7 @@ COPY_TARGET_FIRMWARE()
         local auxiliary
         for auxiliary in odm odm_dlkm system_dlkm vendor_dlkm prism optics up_param; do
             if [[ -e "$WORK_DIR/$auxiliary" || -L "$WORK_DIR/$auxiliary" ]]; then
-                LOGE "Unexpected preserved partition in S10 work tree: $auxiliary"
+                LOGE "Unexpected auxiliary partition in S10 work tree: $auxiliary"
                 return 1
             fi
         done

@@ -12,12 +12,8 @@
 # install) rather than let block_image_update discover a mismatch
 # mid-write.
 #
-# Scope: only the 6 partitions this installer actually writes
-# (system/vendor/product/boot/dtb/dtbo). odm/prism/optics/up_param are
-# preserve-only (never written by this installer, see
-# target/beyond1lte/README.md) and are guarded at
-# build time by scripts/utils/s10_installer_guard.py instead -- this
-# script does not touch them.
+# Check all nine write targets before any write. Empty auxiliary filesystems
+# are valid inputs: the package supplies their contents. No up_param access.
 
 # Check precisely the paths written by updater-script. No alternate alias fallback.
 BLOCK_ROOT=/dev/block/by-name
@@ -104,6 +100,23 @@ check_partition "product" 3072000
 check_partition "boot"    112640
 check_partition "dtb"     16384
 check_partition "dtbo"    16384
+
+check_partition "odm" 8192
+check_partition "prism" 1228800
+check_partition "optics" 61440
+
+# Check tools before writing any partition, not halfway through installation.
+[ -x /sbin/e2fsck ] || [ -x /bin/e2fsck ] || fail "e2fsck is unavailable"
+[ -x /sbin/resize2fs ] || [ -x /bin/resize2fs ] || fail "resize2fs is unavailable"
+
+for part in odm prism optics; do
+    node="$(readlink -f "$BLOCK_ROOT/$part")" || fail "cannot resolve auxiliary device"
+    while read -r device point remainder; do
+        real="$(readlink -f "$device" 2>/dev/null)"
+        [ "$real" != "$node" ] && [ "$point" != "/$part" ] ||
+            fail "auxiliary partition is mounted; unmount $part in recovery first"
+    done < /proc/mounts
+done
 
 echo "layout-preflight: PASSED"
 exit 0

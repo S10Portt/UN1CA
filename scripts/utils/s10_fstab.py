@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""S10 OS fstab update; preserves data and unresolved auxiliary mount entries.
+"""S10 OS fstab update; preserves data and auxiliary mount entries.
 
 Only ext4/EROFS system/vendor/product policies are implemented. A successful
 update does not certify fs_mgr flags, auxiliary mounts, or installed images.

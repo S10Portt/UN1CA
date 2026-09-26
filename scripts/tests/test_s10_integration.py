@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 import io
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -46,6 +47,22 @@ class FirmwareTests(unittest.TestCase):
         self.assertEqual(fw.capabilities(cap),0xc0)
         with self.assertRaises(ValueError):fw.capabilities('invalid')
 
+def auxiliary_fixture(repo, stage):
+    for name in ('target/beyond1lte/installer/layout-preflight.sh',
+                 'target/beyond1lte/installer/auxiliary-postinstall.sh',
+                 'target/beyond1lte/layouts/measurement/layout.json',
+                 'prebuilts/bootable/deprecated-ota/updater'):
+        path=repo/name; path.parent.mkdir(parents=True,exist_ok=True)
+        path.write_bytes((ROOT/name).read_bytes())
+    data=json.loads((ROOT/'target/beyond1lte/auxiliary/artisan311.json').read_text())
+    for part,spec in data['partitions'].items():
+        blob=bytearray(4096); blob[1080:1082]=b'\x53\xef'
+        (stage/(part+'.img')).write_bytes(blob)
+        spec['image_bytes']=len(blob);spec['sha256']=hashlib.sha256(blob).hexdigest()
+    path=repo/'target/beyond1lte/auxiliary/artisan311.json'
+    path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(data))
+    (stage/'auxiliary-source.json').write_bytes(path.read_bytes())
+
 class InstallerStageTests(unittest.TestCase):
     def test_generated_writes_are_guarded_and_abort_retained(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -64,6 +81,7 @@ class InstallerStageTests(unittest.TestCase):
                 p=repo/name;p.parent.mkdir(parents=True,exist_ok=True)
                 p.write_bytes((ROOT/name).read_bytes())
             (repo/'target/beyond1lte/installer/assertions.edify').write_text(guard.ABORT+'\n')
+            auxiliary_fixture(repo,stage)
             script.write_text('\n'.join(lines)+'\n');prepare(repo,stage)
             self.assertEqual(script.read_text().splitlines()[0],guard.ABORT)
             guard.check(repo,stage)
@@ -97,7 +115,9 @@ PARTITIONS_LIST="system vendor product system_ext odm vendor_dlkm odm_dlkm syste
             shell+=function(ROOT/'scripts/internal/build_full_ota_zip.sh','GENERATE_UPDATER_SCRIPT')+'\nGENERATE_UPDATER_SCRIPT\n'
             result=subprocess.run(['bash','-c',shell],env=dict(os.environ,SRC_DIR=str(ROOT),TMP_DIR=str(stage),TARGET_CODENAME='beyond1lte',TARGET_USE_DYNAMIC_PARTITIONS='false'),capture_output=True,text=True)
             self.assertEqual(result.returncode,0,result.stderr)
-            prepare(ROOT,stage)
-            guard.check(ROOT,stage)
+            repo=stage/'fixture-repo';auxiliary_fixture(repo,stage)
+            (repo/'target/beyond1lte/installer/assertions.edify').write_bytes((ROOT/'target/beyond1lte/installer/assertions.edify').read_bytes())
+            prepare(repo,stage)
+            guard.check(repo,stage)
 
 if __name__=='__main__':unittest.main()

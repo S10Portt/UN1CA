@@ -465,6 +465,10 @@ SOURCE_BUILD_INFO="$(cat "$TMP_DIR/source/build_info.txt")"
 TARGET_BUILD_INFO="$(cat "$TMP_DIR/target/build_info.txt")"
 
 TARGET_CODENAME="$(grep "^device" <<< "$TARGET_BUILD_INFO" | cut -d "=" -f 2 -s)"
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    LOGE "S10 requires a full OTA with verified auxiliary payloads; incremental OTA is unsupported"
+    exit 1
+fi
 if [ ! -d "$SRC_DIR/target/$TARGET_CODENAME" ]; then
     LOGE "Folder not found: target/$TARGET_CODENAME"
     exit 1

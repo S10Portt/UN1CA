@@ -1,5 +1,6 @@
 """Host regression fixtures. Run: python3 -B -m unittest discover -s scripts/tests."""
 import json
+import hashlib
 from pathlib import Path
 import subprocess
 import sys
@@ -19,7 +20,8 @@ class InstallerGuardTest(unittest.TestCase):
         self.repo = Path(self.tmp.name)/'repo'
         self.stage = Path(self.tmp.name)/'stage'
         for name in ('target/beyond1lte/installer/layout-preflight.sh',
-                     'target/beyond1lte/layouts/measurement/layout.json'):
+                     'target/beyond1lte/layouts/measurement/layout.json',
+                     'target/beyond1lte/installer/auxiliary-postinstall.sh'):
             p = self.repo/name
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes((ROOT/name).read_bytes())
@@ -32,10 +34,24 @@ class InstallerGuardTest(unittest.TestCase):
         (self.script.parent/'update-binary').write_bytes(p.read_bytes())
         (self.stage/'layout-preflight.sh').write_bytes(
             (self.repo/'target/beyond1lte/installer/layout-preflight.sh').read_bytes())
+        data = json.loads((ROOT/'target/beyond1lte/auxiliary/artisan311.json').read_text())
+        for part,spec in data['partitions'].items():
+            blob = bytearray(4096); blob[1080:1082] = b'\x53\xef'
+            (self.stage/(part+'.img')).write_bytes(blob)
+            spec['image_bytes'] = len(blob)
+            spec['sha256'] = hashlib.sha256(blob).hexdigest()
+        manifest = self.repo/'target/beyond1lte/auxiliary/artisan311.json'
+        manifest.parent.mkdir(parents=True)
+        manifest.write_text(json.dumps(data))
+        (self.stage/'auxiliary-source.json').write_bytes(manifest.read_bytes())
+        (self.stage/'auxiliary-postinstall.sh').write_bytes((ROOT/'target/beyond1lte/installer/auxiliary-postinstall.sh').read_bytes())
         self.lines = list(guard.PREFLIGHT)
         for p in ('system', 'vendor', 'product'):
             self.lines += [f'block_image_update("/dev/block/by-name/{p}", package_extract_file("{p}.transfer.list"), "{p}.new.dat.br", "{p}.patch.dat") ||',
                            'abort("write failed");']
+        for p in guard.AUX_PARTITIONS:
+            self.lines.append(f'assert(package_extract_file("{p}.img", "/dev/block/by-name/{p}"));')
+        self.lines += list(guard.POSTINSTALL)
         for p in ('dtb', 'dtbo', 'boot'):
             self.lines.append(f'assert(package_extract_file("{p}.img", "/dev/block/by-name/{p}"));')
         self.save()
@@ -97,6 +113,48 @@ class InstallerGuardTest(unittest.TestCase):
         self.rejected()
 
 
+    def test_auxiliary_missing_or_altered(self):
+        for name in ('odm.img','prism.img','optics.img'):
+            with self.subTest(name=name):
+                path = self.stage/name; data = path.read_bytes(); path.unlink()
+                self.rejected(); path.write_bytes(data)
+        path = self.stage/'prism.img'; data = path.read_bytes()
+        path.write_bytes(b'X'+data[1:]); self.rejected()
+
+    def test_forbidden_auxiliary_forms(self):
+        for name in ('prism.new.dat.br','up_param.bin','nested/odm.img'):
+            path = self.stage/name; path.parent.mkdir(exist_ok=True)
+            path.write_bytes(b'bad'); self.rejected(); path.unlink()
+
+    def test_duplicate_early_and_unknown_writes(self):
+        original = self.lines[:]
+        odm = 'assert(package_extract_file("odm.img", "/dev/block/by-name/odm"));'
+        for lines in ([odm]+original, original+[odm], original+['format("ext4", "EMMC", "/dev/block/by-name/efs", "0", "/efs");']):
+            self.lines = lines; self.rejected()
+        self.lines = original
+
+    def test_modified_or_missing_postinstall(self):
+        path = self.stage/'auxiliary-postinstall.sh'
+        path.write_text('exit 0'); self.rejected()
+        path.unlink(); self.rejected()
+
+    def test_final_zip_rejects_modified_auxiliary(self):
+        path = Path(self.tmp.name)/'tampered.zip'
+        with zipfile.ZipFile(path,'w') as z:
+            for p in self.stage.rglob('*'):
+                if p.is_file():
+                    data=p.read_bytes()
+                    if p.name=='optics.img': data=data[:-1]+b'X'
+                    z.writestr(p.relative_to(self.stage).as_posix(),data)
+        with self.assertRaises(ValueError): guard.check(self.repo,path)
+
+    def test_auxiliary_size_drift(self):
+        for base in (self.stage,self.repo/'target/beyond1lte/installer'):
+            p=base/'layout-preflight.sh'
+            p.write_text(p.read_text().replace('check_partition "odm" 8192','check_partition "odm" 8191'))
+        self.rejected()
+
+
 class TransferTest(unittest.TestCase):
     def test_full_ranges(self):
         guard.check_transfer(b'4\n5\n0\n0\nerase 2,0,5\nnew 2,0,4\nzero 2,4,5\n', 5)
@@ -133,6 +191,8 @@ class LayoutTest(unittest.TestCase):
             script = script.replace('SYS_CLASS_BLOCK=/sys/class/block', f'SYS_CLASS_BLOCK="{sysfs}"')
             script = script.replace('[ -b "$link" ]', '[ -e "$link" ]')
             path = root/'preflight.sh'
+            # Recovery tool availability is covered in the auxiliary fixture.
+            script = script.replace('[ -x /sbin/e2fsck ]', 'true').replace('[ -x /sbin/resize2fs ]', 'true')
             path.write_text(script)
             def run():
                 return subprocess.run(['sh', str(path)], capture_output=True).returncode

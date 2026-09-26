@@ -2,9 +2,10 @@
 # Copyright (c) 2026 Salvo Giangreco
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Reject preserved partitions even when this packaging script is invoked directly.
+# Reject auxiliary work trees even when this packaging script is invoked directly.
 if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
     python3 -B "$SRC_DIR/scripts/utils/s10_build_preflight.py" work "$WORK_DIR" || exit 1
+    python3 -B "$SRC_DIR/scripts/utils/s10_auxiliary_images.py" verify "$OUT_DIR/inputs/s10-auxiliary" || exit 1
 fi
 
 # [
@@ -157,6 +158,13 @@ if [ -d "$WORK_DIR/kernel" ]; then
         fi
         LOG_STEP_OUT
     done
+fi
+
+# Preserve raw auxiliary bytes in target-files without treating ODM as an OS image.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    mkdir "$TMP_DIR/S10_AUXILIARY" || exit 1
+    python3 -B "$SRC_DIR/scripts/utils/s10_auxiliary_images.py" stage \
+        "$OUT_DIR/inputs/s10-auxiliary" "$TMP_DIR/S10_AUXILIARY" || exit 1
 fi
 
 LOG "- Generating build_info.txt"
