@@ -33,7 +33,7 @@ def load(root, selected):
     profile = json.loads(read(root, f'target/beyond1lte/layouts/{selected}.json'))
     if (profile['schema'] != 1 or profile['id'] != selected or
             profile['target'] != 'beyond1lte' or profile['installation_approved'] is not False or
-            profile['auxiliary_policy'] != dict.fromkeys(('odm', 'prism', 'optics'), 'unresolved')):
+            profile['auxiliary_policy'] != dict.fromkeys(('odm', 'prism', 'optics'), 'pinned-artisan311-ext4')):
         raise ValueError('unsupported profile/installation policy')
     raw = read(root, profile['measurement'])
     if hashlib.sha256(raw).hexdigest() != profile['measurement_sha256']:
@@ -76,7 +76,7 @@ def load(root, selected):
                 size != blocks[Path(device).name] or
                 device != measured['by_name_entries'][name]):
             raise ValueError(f'inconsistent captured mapping: {name}')
-    # ODM/prism/optics capacities are observations, not approved write targets.
+    # Auxiliary capacities are checked separately against the pinned payload manifest.
     return {f'TARGET_{p.upper()}_PARTITION_SIZE': sizes[p] for p in PARTITIONS}
 
 

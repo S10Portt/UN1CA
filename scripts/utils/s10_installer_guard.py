@@ -21,17 +21,16 @@ ABORT = 'abort("UN1CA S10 port is incomplete; installation is disabled.");'
 # This keeps abort removal explicit in the repository while preserving all
 # unrelated installer guards below.
 
-# ArtisanROM 3.1.1's installer writes odm/prism/optics (block_image_update) and up_param (package_extract_file
-# of up_param.bin) as part of a normal install -- they are not factory-locked or
-# out of OTA scope. This build simply has no GZD7-compatible, verified replacement
-# data for these four, so it must not write them until that data exists. Reject
-# any updater-script that references their block devices or ships a matching
-# transfer.list/new.dat/img/bin asset, by name or by a bare "by-name/<partition>"
-# path, so a future accidental (or copy-pasted-from-3.1.1) write is caught here
-# instead of at install time.
-RESERVED_PARTITIONS = ('odm', 'prism', 'optics', 'up_param')
-RESERVED_PATTERN = re.compile(
-    r'(?:^|[^A-Za-z0-9_])(?:' + '|'.join(RESERVED_PARTITIONS) + r')(?:[^A-Za-z0-9_]|$)')
+# Only up_param remains forbidden; auxiliaries require exact payload validation.
+RESERVED_PARTITIONS = ('up_param',)
+RESERVED_PATTERN = re.compile(r'(?:^|[^A-Za-z0-9_])up_param(?:[^A-Za-z0-9_]|$)')
+from s10_auxiliary_contract import check as check_auxiliary, check_zip as check_auxiliary_zip
+
+POSTINSTALL = (
+    'assert(package_extract_file("auxiliary-postinstall.sh", "/tmp/auxiliary-postinstall.sh"));',
+    'set_metadata("/tmp/auxiliary-postinstall.sh", "uid", 0, "gid", 0, "mode", 0755);',
+    'assert(run_program("/tmp/auxiliary-postinstall.sh") == "0");',
+)
 
 
 def code(data):
@@ -63,7 +62,10 @@ def _assertions_abort_present(data):
     )
 
 
-PARTITIONS = ('system', 'vendor', 'product', 'boot', 'dtb', 'dtbo')
+OS_PARTITIONS = ('system', 'vendor', 'product')
+KERNEL_PARTITIONS = ('boot', 'dtb', 'dtbo')
+AUX_PARTITIONS = ('odm', 'prism', 'optics')
+PARTITIONS = OS_PARTITIONS + KERNEL_PARTITIONS + AUX_PARTITIONS
 PREFLIGHT = (
     'assert(package_extract_file("layout-preflight.sh", "/tmp/layout-preflight.sh"));',
     'set_metadata("/tmp/layout-preflight.sh", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755);',
@@ -105,10 +107,27 @@ def check_preflight(repo, script, packaged):
               or 'write_raw_image(' in line or 'format(' in line
               or 'mount(' in line or 'run_program(' in line
               or 'package_extract_dir(' in line
-              or 'package_extract_file(' in line) and line not in PREFLIGHT:
+              or 'package_extract_file(' in line) and line not in PREFLIGHT + POSTINSTALL:
             raise ValueError('unexpected installer operation: ' + line)
     if sorted(found) != sorted(PARTITIONS):
-        raise ValueError('installer must write exactly the six approved partitions')
+        raise ValueError('installer must write exactly the nine approved partitions')
+
+
+    post = []
+    for statement in POSTINSTALL:
+        if script.count(statement) != 1: raise ValueError('missing/duplicate auxiliary postinstall')
+        post.append(script.index(statement))
+    if post != sorted(post): raise ValueError('postinstall order')
+    writes = {allowed[line]: i for i,line in enumerate(script) if line in allowed}
+    if not max(writes[p] for p in OS_PARTITIONS) < min(writes[p] for p in AUX_PARTITIONS):
+        raise ValueError('auxiliary writes must follow OS writes')
+    if not max(writes[p] for p in AUX_PARTITIONS) < post[0] < post[-1] < min(writes[p] for p in KERNEL_PARTITIONS):
+        raise ValueError('auxiliary postinstall must precede kernel writes')
+
+
+def check_postinstall(repo, read_file):
+    if read_file('auxiliary-postinstall.sh') != read(repo/'target/beyond1lte/installer/auxiliary-postinstall.sh'):
+        raise ValueError('modified auxiliary postinstall script')
 
 
 def check_transfer(data, limit):
@@ -141,6 +160,7 @@ def check_transfer(data, limit):
             raise ValueError('overlapping transfer ranges')
 
 
+
 def check_transfers(repo, read_file):
     sizes = json.loads(read(repo/'target/beyond1lte/layouts/measurement/layout.json'))['partition_bytes']
     for part in PARTITIONS[:3]:
@@ -148,7 +168,7 @@ def check_transfers(repo, read_file):
 
 
 def check_zip(repo, path):
-    # Read small installer inputs only, never extract firmware images to disk.
+    # Stream auxiliary payload hashes without extracting firmware images to disk.
     with zipfile.ZipFile(path) as archive:
         names = archive.namelist()
         if len(names) != len(set(names)):
@@ -161,6 +181,8 @@ def check_zip(repo, path):
         validate_script(repo, script, archive.read('META-INF/com/google/android/update-binary'))
         check_preflight(repo, script, archive.read('layout-preflight.sh'))
         check_transfers(repo, archive.read)
+        check_postinstall(repo, archive.read)
+        check_auxiliary_zip(archive, repo)
 
 
 def validate_script(repo, script, binary):
@@ -190,6 +212,8 @@ def check(repo, stage=None):
     validate_script(repo, script, (stage/'META-INF/com/google/android/update-binary').read_bytes())
     check_preflight(repo, script, read(stage/'layout-preflight.sh'))
     check_transfers(repo, lambda name: read(stage/name))
+    check_postinstall(repo, lambda name: read(stage/name))
+    check_auxiliary(stage, 'package', repo)
     for path in stage.rglob('*'):
         if path.is_file() and any(path.name == p or path.name.startswith(p + '.')
                                   for p in RESERVED_PARTITIONS):

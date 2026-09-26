@@ -1,2 +1,2 @@
 # Controlled beyond1lte test installation is enabled.
-# The measured partition layout preflight and preserved-partition guards remain mandatory.
+# The measured partition layout preflight and nine-partition and pinned-payload guards remain mandatory.

@@ -11,10 +11,12 @@ are offline cache keys. The S10 build validates registrations before tool
 setup and does not fall back to downloading another firmware version.
 
 The `user-repartition-20260913` profile describes a measured repartitioned
-beyond1lte, not a stock or universal SM-G973F/SM-G973N layout. Only boot, dtb,
-dtbo, system, vendor and product may be written. ODM, prism, optics and
-up_param remain preserved. Recovery checks the six write targets and their
-exact sizes before writes; package validation also rejects reserved assets.
+beyond1lte, not a stock or universal SM-G973F/SM-G973N layout. The installer
+writes boot, dtb, dtbo, system, vendor, product, ODM, prism and optics. Data,
+EFS and up_param are not written. Recovery checks all nine paths and exact
+sizes before any write, rejects mounted auxiliary partitions, and requires
+e2fsck and resize2fs. All installations replace the three auxiliary contents,
+including updates; existing carrier customizations there are not preserved.
 
 ## Register local inputs
 
@@ -70,4 +72,38 @@ Do not infer GZH3 runtime results from the earlier ArtisanROM donor. Kernel-incl
 VINTF checks currently fail because the donor matrices have no 4.14 kernel entry;
 this is distinct from the kernel-disabled boot compatibility check.
 The unconditional development abort has been removed for controlled testing;
-exact partition-size checks and the preserved-partition guards remain enforced.
+exact partition-size checks and the pinned auxiliary payload guards remain enforced.
+
+## Pinned auxiliary filesystems
+
+Prepare the verified ArtisanROM 3.1.1 input once (Python 3 and brotli required):
+
+```sh
+python3 -B scripts/utils/s10_auxiliary_images.py prepare /path/to/ArtisanROM_OFFICIAL_3.1.1_20260428_beyond1lte-sign.zip out/inputs/s10-auxiliary
+```
+
+Substitute the configured OUT_DIR for `out` if customized. The source ZIP,
+raw image hashes, lengths and capacities are pinned in auxiliary/artisan311.json.
+Preparation requires a new destination; use `verify` to check an existing cache.
+The raw ext4 images stay outside WORK_DIR and are not rebuilt or AVB-signed.
+
+UN1CA target-files contains them under S10_AUXILIARY, with the source manifest.
+The full OTA builder verifies that bundle and stages it at the root only after
+OS image conversion. Older S10 target-files lacking the bundle must be rebuilt.
+S10 incremental OTAs are rejected; other targets keep their existing pipeline.
+The final signed ZIP is checked again against the manifest and nine-write contract.
+
+Installation writes OS partitions, then the three auxiliaries, checks e2fsck
+(exit 0/1 only) and resize2fs, and finally writes the kernel. Resizing changes
+on-device filesystem bytes; the ZIP retains the pinned raw hashes.
+
+The intended clean path is Repartition → Cleaner → new integrated ROM → normal
+clean-install data setup → boot. Never run Cleaner after ROM installation.
+No automatic data wipe or separate auxiliary seed installation is added.
+
+**Integrated clean boot is not yet verified for UN1CA GZH3.** This ports the
+auxiliary provisioning approach from ArtisanROM; its runtime outcome is not
+proof for this donor. Earlier successful installs may have relied on existing
+auxiliary or first-boot data/EFS/OMR state. The pinned 3.1.1 ODM intentionally
+retains its donor identity. A complete build and clean-install device test,
+including CSC, telephony, SELinux, USB and DeX regression checks, remain required.

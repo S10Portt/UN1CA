@@ -7,8 +7,8 @@
   "scope": "Only the supplied user device capture; not a stock or universal S10 layout.",
   "installation_approved": false,
   "auxiliary_policy": {
-    "odm": "unresolved",
-    "prism": "unresolved",
-    "optics": "unresolved"
+    "odm": "pinned-artisan311-ext4",
+    "prism": "pinned-artisan311-ext4",
+    "optics": "pinned-artisan311-ext4"
   }
 }

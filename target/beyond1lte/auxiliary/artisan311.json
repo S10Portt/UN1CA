@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source": {
+    "file": "ArtisanROM_OFFICIAL_3.1.1_20260428_beyond1lte-sign.zip",
+    "sha256": "b991eb690688f57a290c4930410f9fd307d41ba328586ac53d8fbdc4a3608d29"
+  },
+  "partitions": {
+    "odm": {
+      "image_bytes": 1560576,
+      "partition_bytes": 4194304,
+      "filesystem": "ext4",
+      "sha256": "9a7636f055e1ce55515b10f780f67ee794954811ce9c395d7df483d8cc3e0563"
+    },
+    "prism": {
+      "image_bytes": 69603328,
+      "partition_bytes": 629145600,
+      "filesystem": "ext4",
+      "sha256": "c05c4eb4d2d7396ad4f7c6023a81ade28212688d6cc81800d8917a128d3d6138"
+    },
+    "optics": {
+      "image_bytes": 5066752,
+      "partition_bytes": 31457280,
+      "filesystem": "ext4",
+      "sha256": "3aed7b60b69e6b9480462797a1c6dc9bf0ea8cc06a78e02bb0bf81e89e2ebac4"
+    }
+  }
+}

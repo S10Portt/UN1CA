@@ -238,6 +238,17 @@ fi
 
 TARGET_USE_DYNAMIC_PARTITIONS="$(grep "^use_dynamic_partitions" <<< "$BUILD_INFO" | cut -d "=" -f 2 -s)"
 
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 -B "$SRC_DIR/scripts/utils/s10_auxiliary_contract.py" package "$TMP_DIR/S10_AUXILIARY" || exit 1
+    # Old or foreign target-files must not introduce a second auxiliary payload.
+    for p in odm prism optics up_param; do
+        if compgen -G "$TMP_DIR/$p.*" > /dev/null || [[ -e "$TMP_DIR/$p" ]]; then
+            LOGE "Unexpected root auxiliary input: $p"
+            exit 1
+        fi
+    done
+fi
+
 if $TARGET_USE_DYNAMIC_PARTITIONS; then
     LOG "- Generating dynamic_partitions_op_list"
     GENERATE_OP_LIST
@@ -260,6 +271,13 @@ for p in $PARTITIONS_LIST; do
     fi
 done
 
+# OS conversion is complete; stage immutable ext4 inputs at the ZIP root.
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 -B "$SRC_DIR/scripts/utils/s10_auxiliary_images.py" stage \
+        "$TMP_DIR/S10_AUXILIARY" "$TMP_DIR" || exit 1
+    rm -rf "$TMP_DIR/S10_AUXILIARY"
+fi
+
 LOG "- Generating updater-script"
 GENERATE_UPDATER_SCRIPT
 
@@ -280,6 +298,10 @@ if [ -f "$SRC_DIR/target/$TARGET_CODENAME/installer/customize.sh" ]; then
     . "$SRC_DIR/target/$TARGET_CODENAME/installer/customize.sh"
     ) || exit 1
     LOG_STEP_OUT
+fi
+
+if [[ "$TARGET_CODENAME" == "beyond1lte" ]]; then
+    python3 -B "$SRC_DIR/scripts/utils/s10_installer_guard.py" "$SRC_DIR" "$TMP_DIR" || exit 1
 fi
 
 LOG "- Creating zip"
